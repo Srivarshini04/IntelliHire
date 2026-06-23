@@ -1,0 +1,6 @@
+Extract a role blueprint from this job description.
+
+Title: {title}
+Description: {description}
+
+Respond with JSON containing: role, skills, behavioral_traits, weights, required_evidence.

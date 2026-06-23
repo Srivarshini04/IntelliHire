@@ -1,0 +1,12 @@
+{
+  "role": "AI Engineer",
+  "skills": ["Python", "LLMs", "FastAPI", "RAG", "Agents"],
+  "behavioral_traits": ["Ownership", "Execution", "Learning"],
+  "weights": {
+    "technical": 0.35,
+    "execution": 0.25,
+    "ownership": 0.20,
+    "learning": 0.20
+  },
+  "required_evidence": ["projects", "github", "production_systems"]
+}

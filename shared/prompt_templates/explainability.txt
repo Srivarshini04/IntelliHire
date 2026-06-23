@@ -1,0 +1,8 @@
+Generate an explanation for why this candidate was ranked.
+
+Candidate: {candidate_name}
+Capability Score: {capability_score}
+Risk Score: {risk_score}
+HTI Score: {hti_score}
+
+Respond with JSON: {"strengths": [...], "risks": [...], "reason": "..."}

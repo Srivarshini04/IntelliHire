@@ -1,0 +1,7 @@
+Rate the relevance of the following evidence artifact for the given role.
+Score from 0 to 100. Only artifacts scoring above 60 should be retained.
+
+Role: {role}
+Evidence: {artifact}
+
+Respond with JSON: {"artifact": "...", "relevance": <score>, "reason": "..."}

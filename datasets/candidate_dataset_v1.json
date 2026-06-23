@@ -1,0 +1,8 @@
+{
+  "job": {
+    "title": "AI Engineer",
+    "description": "Senior AI Engineer with Python, LLMs, FastAPI, RAG, and agent experience."
+  },
+  "candidates": [],
+  "notes": "Populate 20 candidates: 5 Group A, 10 Group B, 5 Group C. See datasets/README.md"
+}
