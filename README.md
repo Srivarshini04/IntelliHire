@@ -113,6 +113,22 @@ Target demo moment: ATS ranks hidden talent #15, DELULU ranks them #2.
 - [Scoring](docs/scoring.md) — Engine formulas
 - [API Contracts](docs/api-contracts.md) — Request/response schemas
 
-## License
+## GitHub Evidence Integration
 
-Hackathon project — internal use.
+Two layers work together:
+
+1. **Basic extractor** (`backend/app/services/evidence/github_extractor.py`) — teammate REST API: profile, repos, languages, commit counts, events
+2. **Deep pipeline** (`backend/app/pipeline/`) — Tree API feature detection, capability graph, hidden gem, JD matching
+
+```bash
+# Standalone CLI (teammate workflow)
+python scripts/github_cli.py https://github.com/username
+
+# Full API analysis
+curl -X POST http://localhost:8000/api/github/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"github_url":"https://github.com/username","required_skills":["Python","FastAPI"]}'
+```
+
+Set `GITHUB_TOKEN` in `backend/.env` for production throughput.
+

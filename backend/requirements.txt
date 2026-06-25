@@ -18,3 +18,5 @@ PyPDF2>=3.0.1
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 aiofiles>=24.1.0
+pygithub>=2.5.0
+requests>=2.32.0

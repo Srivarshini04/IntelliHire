@@ -43,6 +43,10 @@ yarn-error.log*
 # Docker
 docker/data/
 
+# GitHub intelligence cache
+github_intel.db
+backend/github_intel.db
+
 # Uploads & generated data
 backend/uploads/
 datasets/generated/
