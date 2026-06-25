@@ -1,12 +1,57 @@
 {
-  "role": "AI Engineer",
-  "skills": ["Python", "LLMs", "FastAPI", "RAG", "Agents"],
-  "behavioral_traits": ["Ownership", "Execution", "Learning"],
-  "weights": {
-    "technical": 0.35,
+  "role_title": {
+    "value": "AI Engineer",
+    "confidence": 1.0,
+    "source": null
+  },
+  "experience_level": {
+    "value": "senior",
+    "confidence": 0.9,
+    "source": "5+ years experience required"
+  },
+  "required_skills": [
+    {
+      "name": "Python",
+      "normalized_name": "Python",
+      "confidence": 0.99,
+      "source": "Required: Python",
+      "category": "technical"
+    },
+    {
+      "name": "FastAPI",
+      "normalized_name": "FastAPI",
+      "confidence": 0.95,
+      "source": "Required: FastAPI",
+      "category": "technical"
+    }
+  ],
+  "preferred_skills": [],
+  "responsibilities": [],
+  "behavioral_traits": [
+    {
+      "value": "Ownership",
+      "confidence": 0.85,
+      "source": "Take ownership of AI systems end-to-end"
+    }
+  ],
+  "education": [],
+  "certifications": [],
+  "domain": null,
+  "industry": null,
+  "tools": [],
+  "success_metrics": [],
+  "capability_weights": {
+    "technical": 0.40,
     "execution": 0.25,
     "ownership": 0.20,
-    "learning": 0.20
+    "learning": 0.15
   },
-  "required_evidence": ["projects", "github", "production_systems"]
+  "required_evidence": ["projects", "github", "production_systems"],
+  "versioning": {
+    "blueprint_version": "1.0.0",
+    "parser_version": "1.0.0",
+    "prompt_version": "1.0.0",
+    "llm_model": "gemini-2.0-flash",
+    "generated_at": "2026-06-23T00:00:00Z"
+  }
 }

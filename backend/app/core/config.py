@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     qdrant_url: str = "http://localhost:6333"
     gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.0-flash"
+    llm_provider: str = "gemini"
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
     upload_dir: str = "./uploads"
     cors_origins: list[str] = ["http://localhost:3000"]
 
@@ -26,7 +30,6 @@ class Settings(BaseSettings):
     github_api_base: str = "https://api.github.com"
 
     # LLM / LinkedIn (optional)
-    openai_api_key: str = ""
     llm_api_base: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"
     use_llm_linkedin: bool = True

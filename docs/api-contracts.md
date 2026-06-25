@@ -115,3 +115,92 @@ GET /health
 ```
 
 **Response:** `{ "status": "ok", "service": "delulu-api" }`
+
+---
+
+## Document Intelligence (feat/document-understanding-engines)
+
+See [document-intelligence.md](./document-intelligence.md) for full architecture.
+
+### Upload Job Description
+
+```
+POST /jobs/upload
+Content-Type: multipart/form-data
+```
+
+**Input:** PDF or DOCX file
+
+**Response:**
+```json
+{
+  "document_id": "uuid",
+  "document": {
+    "filename": "Senior_AI_Engineer.pdf",
+    "filetype": "pdf",
+    "pages": 2,
+    "language": "en",
+    "raw_text": "...",
+    "cleaned_text": "...",
+    "sections": {},
+    "confidence": 0.98
+  },
+  "message": "Document extracted. Review text, then generate blueprint."
+}
+```
+
+### Generate Blueprint (draft)
+
+```
+POST /jobs/blueprint
+```
+
+**Request:**
+```json
+{
+  "document_id": "uuid",
+  "text": "optional reviewed text override"
+}
+```
+
+**Response:** Full `RoleBlueprint` with `ExtractedField` confidence + `versioning` metadata. Status: `draft`.
+
+### Approve & Save Job
+
+```
+POST /jobs
+```
+
+**Request:** `JobApproveRequest` — recruiter-edited blueprint after review.
+
+### Upload Resume (draft)
+
+```
+POST /candidates/upload
+Content-Type: multipart/form-data
+```
+
+**Response:** `CandidateProfile` draft with confidence per field. Review before `POST /candidates`.
+
+### ExtractedField shape (all AI fields)
+
+```json
+{
+  "value": "Senior",
+  "confidence": 0.94,
+  "source": "5+ years of backend engineering experience required"
+}
+```
+
+### SkillField shape
+
+```json
+{
+  "name": "Tensor Flow",
+  "normalized_name": "TensorFlow",
+  "confidence": 0.99,
+  "source": "Required: Tensor Flow, PyTorch",
+  "category": "technical"
+}
+```
+
