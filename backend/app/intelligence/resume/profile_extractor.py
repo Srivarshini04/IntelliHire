@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.intelligence.resume.profile_orchestrator import ResumeProfileOrchestrator
 from app.schemas.candidate import CandidateProfile
 from app.schemas.document import Document
 
 
-async def extract_profile(document: Document) -> CandidateProfile:
-  """TODO Phase 3: prompt + URL extraction + SkillNormalizer."""
-  raise NotImplementedError("Profile extractor — implement in feat/resume-intelligence")
+async def extract_profile(
+    document: Document,
+    db: AsyncSession | None = None,
+) -> CandidateProfile:
+    orchestrator = ResumeProfileOrchestrator(db=db)
+    profile, _ = await orchestrator.run(document)
+    return profile

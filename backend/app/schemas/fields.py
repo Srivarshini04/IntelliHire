@@ -56,12 +56,16 @@ class ExtractedField(BaseModel, Generic[T]):
 
 
 class SkillField(BaseModel):
+    skill_id: str | None = None
     name: str
     normalized_name: str
+    canonical_name: str | None = None
+    aliases: list[str] = Field(default_factory=list)
     confidence: float = Field(ge=0.0, le=1.0, default=1.0)
     source: str | None = None
     source_span: SourceSpan | None = None
     category: str | None = None
+    domain: str | None = None
     provenance: ExtractionProvenance | None = None
 
     @property

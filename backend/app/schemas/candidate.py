@@ -47,6 +47,7 @@ class ResumeUploadResponse(BaseModel):
     document: Document
     profile: CandidateProfile
     status: str = "draft"
+    warnings: list[str] = Field(default_factory=list)
     message: str = "Profile extracted. Review before saving candidate."
 
 
