@@ -1,0 +1,42 @@
+- skill_id: SKILL_000001
+  canonical: Python
+  aliases: [py, python3]
+  category: Programming Language
+  domain: Software Engineering
+  related: [FastAPI, Django, Flask]
+  embedding_key: python
+- skill_id: SKILL_000002
+  canonical: JavaScript
+  aliases: [js, ecmascript]
+  category: Programming Language
+  domain: Software Engineering
+  related: [TypeScript, React, Node.js]
+  embedding_key: javascript
+- skill_id: SKILL_000003
+  canonical: TypeScript
+  aliases: [ts]
+  category: Programming Language
+  domain: Software Engineering
+  related: [JavaScript, Node.js, React]
+  embedding_key: typescript
+- skill_id: SKILL_000004
+  canonical: TensorFlow
+  aliases: [tf, tensor flow]
+  category: ML Framework
+  domain: Data & AI
+  related: [PyTorch, Keras]
+  embedding_key: tensorflow
+- skill_id: SKILL_000005
+  canonical: Kubernetes
+  aliases: [k8s, kube]
+  category: DevOps Platform
+  domain: Infrastructure
+  related: [Docker, Helm]
+  embedding_key: kubernetes
+- skill_id: SKILL_000006
+  canonical: FastAPI
+  aliases: [fast api]
+  category: Backend Framework
+  domain: Software Engineering
+  related: [Python, Pydantic]
+  embedding_key: fastapi
