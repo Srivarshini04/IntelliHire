@@ -64,6 +64,7 @@ class JobResponse(BaseModel):
     role_blueprint: RoleBlueprint | dict | None = None
     document_id: UUID | None = None
     created_at: datetime | None = None
+    candidate_count: int = 0
 
     model_config = {"from_attributes": True}
 

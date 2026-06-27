@@ -45,7 +45,23 @@ def _extract_pdf(content: bytes) -> tuple[str, int]:
 
         doc = fitz.open(stream=content, filetype="pdf")
         pages = [page.get_text() for page in doc]
-        return "\n\n".join(pages), len(pages)
+
+        # Resumes usually link GitHub/LinkedIn as clickable text (e.g. "GitHub"),
+        # so the real URL lives only in the PDF link annotation, not the visible
+        # text. Capture those URIs so downstream URL extraction can find them.
+        links: list[str] = []
+        for page in doc:
+            for link in page.get_links():
+                uri = link.get("uri")
+                if uri and uri.startswith(("http://", "https://")) and uri not in links:
+                    links.append(uri)
+
+        body = "\n\n".join(pages)
+        if links:
+            # Append (not prepend) so the resume's first line stays the candidate
+            # name; URL extraction scans the whole text anyway.
+            body = body + "\n\nLinks:\n" + "\n".join(links)
+        return body, len(pages)
     except ImportError:
         from PyPDF2 import PdfReader
         import io

@@ -1,6 +1,7 @@
 import type {
   Candidate,
   CandidateDetail,
+  CandidateListItem,
   Job,
   RankingItem,
 } from "./types";
@@ -31,6 +32,18 @@ export async function createJob(title: string, description: string): Promise<Job
 
 export async function getJob(jobId: string): Promise<Job> {
   return request<Job>(`/jobs/${jobId}`);
+}
+
+export async function listJobs(): Promise<Job[]> {
+  return request<Job[]>("/jobs");
+}
+
+export async function deleteJob(jobId: string): Promise<{ deleted: boolean; candidates_removed: number }> {
+  return request(`/jobs/${jobId}`, { method: "DELETE" });
+}
+
+export async function listJobCandidates(jobId: string): Promise<CandidateListItem[]> {
+  return request<CandidateListItem[]>(`/jobs/${jobId}/candidates`);
 }
 
 export async function uploadCandidate(formData: FormData): Promise<Candidate> {

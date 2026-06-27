@@ -2,13 +2,15 @@ import uuid
 from pathlib import Path
 
 import aiofiles
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.documents.service import build_document
+from app.intelligence.resume.profile_extractor import extract_profile
 from app.models import Candidate, Evidence, Job
 from app.models.scoring import CapabilityProfile, HiddenTalentProfile, RiskProfile
 from app.schemas.candidate import (
@@ -21,7 +23,7 @@ from app.schemas.candidate import (
     RiskProfileSchema,
 )
 from app.schemas.ranking import AnalyzeResponse
-from app.services.analysis_pipeline import analyze_candidate
+from app.services.analysis_pipeline import analyze_candidate, analyze_candidate_in_background
 from app.services.ranking.explainability_engine import generate_explanation
 
 router = APIRouter(prefix="/candidates", tags=["candidates"])
@@ -29,8 +31,9 @@ router = APIRouter(prefix="/candidates", tags=["candidates"])
 
 @router.post("", response_model=CandidateResponse)
 async def upload_candidate(
+    background_tasks: BackgroundTasks,
     job_id: uuid.UUID = Form(...),
-    name: str = Form(...),
+    name: str | None = Form(None),
     email: str | None = Form(None),
     github_url: str | None = Form(None),
     linkedin_url: str | None = Form(None),
@@ -42,12 +45,33 @@ async def upload_candidate(
         raise HTTPException(status_code=404, detail="Job not found")
 
     resume_path = None
+    resume_bytes: bytes | None = None
     if resume and resume.filename:
+        resume_bytes = await resume.read()
         upload_dir = Path(settings.upload_dir)
         upload_dir.mkdir(parents=True, exist_ok=True)
         resume_path = str(upload_dir / f"{uuid.uuid4()}_{resume.filename}")
         async with aiofiles.open(resume_path, "wb") as f:
-            await f.write(await resume.read())
+            await f.write(resume_bytes)
+
+    # Everything is in the resume: auto-fill any identity field not provided in the form.
+    if resume_bytes and not (name and github_url and linkedin_url):
+        try:
+            document = build_document(resume.filename, resume_bytes)
+            profile = await extract_profile(document, db=None)
+            urls = profile.url_fields()
+            name = name or (profile.name.value if profile.name else None)
+            email = email or (profile.email.value if profile.email and profile.email.value else None)
+            github_url = github_url or urls.get("github_url")
+            linkedin_url = linkedin_url or urls.get("linkedin_url")
+        except Exception:
+            pass
+
+    if not name:
+        raise HTTPException(
+            status_code=400,
+            detail="Could not determine candidate name — provide a name or a readable resume.",
+        )
 
     candidate = Candidate(
         job_id=job_id,
@@ -60,6 +84,9 @@ async def upload_candidate(
     db.add(candidate)
     await db.commit()
     await db.refresh(candidate)
+
+    # Auto-analyze the new candidate in the background — no manual trigger needed.
+    background_tasks.add_task(analyze_candidate_in_background, candidate.id)
 
     return CandidateResponse(
         candidate_id=candidate.id,

@@ -73,6 +73,17 @@ class CandidateResponse(BaseModel):
     github_url: str | None = None
     linkedin_url: str | None = None
 
+
+class CandidateListItem(BaseModel):
+    candidate_id: UUID
+    name: str
+    email: str | None = None
+    github_url: str | None = None
+    linkedin_url: str | None = None
+    has_resume: bool = False
+    analyzed: bool = False
+    created_at: datetime | None = None
+
     model_config = {"from_attributes": True}
 
 
@@ -85,6 +96,8 @@ class CapabilityProfileSchema(BaseModel):
     domain_expertise: float = 0.0
     capability_score: float = 0.0
 
+    model_config = {"from_attributes": True}
+
 
 class RiskProfileSchema(BaseModel):
     evidence_risk: float = 0.0
@@ -92,10 +105,14 @@ class RiskProfileSchema(BaseModel):
     credibility_risk: float = 0.0
     risk_score: float = 0.0
 
+    model_config = {"from_attributes": True}
+
 
 class HTIProfileSchema(BaseModel):
     visibility_score: float = 0.0
     hti_score: float = 0.0
+
+    model_config = {"from_attributes": True}
 
 
 class EvidenceSchema(BaseModel):

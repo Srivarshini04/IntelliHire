@@ -130,7 +130,9 @@ def _structured_profile_to_text(data: dict) -> str:
     """Normalize LinkdAPI / similar JSON into plain text for feature extraction."""
     parts: list[str] = []
 
-    name = _pick(data, "fullName", "full_name", "name")
+    name = _pick(data, "fullName", "full_name", "name") or (
+        f"{data.get('firstName') or ''} {data.get('lastName') or ''}".strip() or None
+    )
     if name:
         parts.append(f"Name: {name}")
     headline = _pick(data, "headline", "tagline")

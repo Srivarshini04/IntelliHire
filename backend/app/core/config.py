@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     linkedin_data_provider: str = "auto"
     linkedin_session_cookie: str = ""
 
+    # Apify (LinkedIn evidence) — mirrors GitHub token/base settings
+    apify_token: str = ""
+    apify_api_base: str = "https://api.apify.com/v2"
+    apify_linkedin_actor: str = "harvestapi/linkedin-profile-scraper"
+    apify_linkedin_input_field: str = "queries"
+
     # Document intelligence
     pii_policy: str = "mask_external"  # detect_only | mask_external | mask_always
     object_storage_backend: str = "local"  # local | s3 | minio
@@ -46,7 +52,8 @@ class Settings(BaseSettings):
     object_storage_access_key: str = ""
     object_storage_secret_key: str = ""
 
-    model_config = {"env_file": ".env", "extra": "ignore"}
+    # .env.local is loaded last so it overrides .env (local secrets / API tokens).
+    model_config = {"env_file": (".env", ".env.local"), "extra": "ignore"}
 
 
 @lru_cache
