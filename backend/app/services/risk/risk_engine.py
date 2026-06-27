@@ -1,5 +1,7 @@
 """Risk Engine — evidence gaps and credibility signals."""
 
+from app.skills.matching import canonical, matches_skill_list
+
 
 async def compute_risk(evidence: dict, capability: dict, role_blueprint: dict) -> dict:
     github = evidence.get("github") or {}
@@ -26,20 +28,19 @@ async def compute_risk(evidence: dict, capability: dict, role_blueprint: dict) -
     evidence_risk = min(missing_sources * 25 + max(0, 3 - repos_analyzed) * 10, 100)
 
     # Skills a candidate can claim from LinkedIn (skill claims + features built).
-    linkedin_claims = {
-        c.lower() for c in (linkedin.get("skills") or {}).get("skills", [])
-    } | {f.lower() for f in linkedin_features}
+    linkedin_claims = list((linkedin.get("skills") or {}).get("skills", [])) + list(linkedin_features)
     # Required skills found in the resume (matched against JD in the pipeline).
-    resume_matched = {m.lower() for m in (resume.get("jd_match") or {}).get("matched", [])}
+    resume_matched = list((resume.get("jd_match") or {}).get("matched", []))
 
-    required_skills = [s.lower() for s in (role_blueprint.get("skills") or [])]
+    required_skills = [str(s) for s in (role_blueprint.get("skills") or []) if str(s).strip()]
+    # Canonicalize GitHub-verified skills (score >= 40) for variant-aware matching.
     skill_scores = deep.get("skill_scores") or {}
+    github_canon = {canonical(name) for name, score in skill_scores.items() if score is not None and score >= 40}
     gaps = 0
     for skill in required_skills:
-        score = skill_scores.get(skill) or skill_scores.get(skill.title())
-        github_covered = score is not None and score >= 40
-        linkedin_covered = any(skill in claim or claim in skill for claim in linkedin_claims)
-        resume_covered = any(skill in m or m in skill for m in resume_matched)
+        github_covered = canonical(skill) in github_canon
+        linkedin_covered = matches_skill_list(skill, linkedin_claims)
+        resume_covered = matches_skill_list(skill, resume_matched)
         if not (github_covered or linkedin_covered or resume_covered):
             gaps += 1
     role_gap_risk = min((gaps / max(len(required_skills), 1)) * 100, 100) if required_skills else 20.0
