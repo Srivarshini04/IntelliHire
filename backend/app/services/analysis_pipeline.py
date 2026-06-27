@@ -1,7 +1,6 @@
 """Analysis pipeline orchestrator."""
 
 import logging
-import re
 import uuid
 from pathlib import Path
 
@@ -33,6 +32,7 @@ from app.services.hti.hti_engine import compute_hti
 from app.services.ranking.explainability_engine import generate_explanation
 from app.services.ranking.ranking_engine import compute_fit_score
 from app.services.risk.risk_engine import compute_risk
+from app.skills.matching import is_covered
 
 logger = logging.getLogger(__name__)
 
@@ -75,16 +75,11 @@ def _build_resume_evidence(resume: dict, resume_text: str | None, role_blueprint
     no GitHub/LinkedIn evidence is available.
     """
     skill_names = _resume_skill_names(resume)
-    lower_skills = {n.lower() for n in skill_names}
-    text_lower = (resume_text or "").lower()
 
     required = [str(s) for s in (role_blueprint.get("skills") or []) if str(s).strip()]
     matched: list[str] = []
     for req in required:
-        needle = req.lower().strip()
-        in_skills = any(needle in s or s in needle for s in lower_skills)
-        in_text = bool(re.search(r"\b" + re.escape(needle) + r"\b", text_lower))
-        if in_skills or in_text:
+        if is_covered(req, skills=skill_names, text=resume_text or ""):
             matched.append(req)
 
     coverage = (len(matched) / len(required) * 100.0) if required else min(len(skill_names) * 6.0, 60.0)
@@ -207,6 +202,16 @@ async def analyze_candidate(db: AsyncSession, candidate_id: uuid.UUID) -> str:
 
     capability = await compute_capability(evidence_data, role_blueprint)
     risk = await compute_risk(evidence_data, capability, role_blueprint)
+
+    # Role-fit blend: capability measures raw ability (radar dimensions stay as-is),
+    # but the headline score is scaled toward role relevance so a candidate who
+    # matches the JD outranks an equally-skilled candidate who doesn't. A perfect
+    # fit keeps full capability; a zero-fit candidate retains 60%.
+    role_fit = 1.0 - (risk["role_gap_risk"] / 100.0)
+    capability["capability_score"] = round(
+        capability["capability_score"] * (0.6 + 0.4 * role_fit), 1
+    )
+
     hti = await compute_hti(capability["capability_score"], evidence_data)
 
     # Confidence Engine (HLD #6): trustworthiness from evidence quantity,

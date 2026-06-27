@@ -68,7 +68,21 @@ def _extract_pdf(content: bytes) -> tuple[str, int]:
 
         reader = PdfReader(io.BytesIO(content))
         pages = [p.extract_text() or "" for p in reader.pages]
-        return "\n\n".join(pages), len(pages)
+
+        # Mirror the fitz path: clickable text (e.g. "GitHub") keeps its real URL
+        # only in the PDF link annotation, so recover those URIs here too.
+        links: list[str] = []
+        for page in reader.pages:
+            for annot in page.get("/Annots") or []:
+                action = annot.get_object().get("/A") or {}
+                uri = action.get("/URI")
+                if uri and uri.startswith(("http://", "https://")) and uri not in links:
+                    links.append(uri)
+
+        body = "\n\n".join(pages)
+        if links:
+            body = body + "\n\nLinks:\n" + "\n".join(links)
+        return body, len(pages)
 
 
 def _extract_docx(content: bytes) -> tuple[str, int]:
