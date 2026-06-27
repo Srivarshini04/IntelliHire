@@ -1,4 +1,4 @@
-"""Heuristic section detection for document upload."""
+"""Section chunking for LLM context windows."""
 
 from __future__ import annotations
 
@@ -6,30 +6,18 @@ import re
 
 
 def detect_sections(text: str) -> dict[str, str]:
-    headers = [
-        ("role_summary", r"(?i)^(role|position|job)\s+(summary|title|overview)"),
-        ("responsibilities", r"(?i)^responsibilities"),
-        ("required_skills", r"(?i)^(required|must have)"),
-        ("preferred_skills", r"(?i)^(preferred|nice to have)"),
-        ("qualifications", r"(?i)^qualifications"),
-    ]
+    """Heuristic section split — LLM refinement in Phase 2."""
+    headers = re.split(
+        r"\n(?=(?:REQUIREMENTS|RESPONSIBILITIES|QUALIFICATIONS|EXPERIENCE|SKILLS|EDUCATION|ABOUT)\b)",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if len(headers) <= 1:
+        return {"body": text}
+
     sections: dict[str, str] = {}
-    current_key = "body"
-    current_lines: list[str] = []
-
-    for line in text.split("\n"):
-        matched = None
-        for key, pattern in headers:
-            if re.match(pattern, line.strip()):
-                if current_lines:
-                    sections[current_key] = "\n".join(current_lines).strip()
-                current_key = key
-                current_lines = []
-                matched = True
-                break
-        if not matched:
-            current_lines.append(line)
-
-    if current_lines:
-        sections[current_key] = "\n".join(current_lines).strip()
+    for block in headers:
+        lines = block.strip().split("\n", 1)
+        key = lines[0].strip().lower().replace(" ", "_")[:40]
+        sections[key] = lines[1].strip() if len(lines) > 1 else block.strip()
     return sections

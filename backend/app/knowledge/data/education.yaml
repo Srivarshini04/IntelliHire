@@ -1,0 +1,12 @@
+- education_id: EDU_000001
+  canonical: Bachelor of Technology
+  aliases: [btech, b.tech]
+  level: Undergraduate
+- education_id: EDU_000002
+  canonical: Bachelor of Science
+  aliases: [bsc, b.s.]
+  level: Undergraduate
+- education_id: EDU_000003
+  canonical: Master of Science
+  aliases: [msc, m.s.]
+  level: Postgraduate

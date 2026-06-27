@@ -20,7 +20,7 @@ async def create_job(payload: JobCreate, db: AsyncSession = Depends(get_db)):
     job = Job(
         title=payload.title,
         description=payload.description,
-        role_blueprint=role_blueprint.model_dump(),
+        role_blueprint=role_blueprint,
     )
     db.add(job)
     await db.commit()

@@ -80,6 +80,7 @@ def build_document_from_text(text: str, *, filename: str = "pasted.txt") -> Docu
     quality = score_document_quality(cleaned, 1, "txt")
     sections = detect_sections(cleaned)
     content_hash = hashlib.sha256(content).hexdigest()
+    extraction_confidence = min(quality.score / 100.0, 1.0)
 
     return Document(
         filename=filename,
@@ -100,7 +101,7 @@ def build_document_from_text(text: str, *, filename: str = "pasted.txt") -> Docu
         ),
         quality=quality,
         pii=pii_result.detection,
-        confidence=min(quality.score / 100.0, 1.0),
+        confidence=extraction_confidence,
     )
 
 
@@ -119,6 +120,7 @@ def build_document(filename: str, content: bytes) -> Document:
     quality = score_document_quality(cleaned, page_count, filetype)
     sections = detect_sections(cleaned)
     content_hash = hashlib.sha256(content).hexdigest()
+    extraction_confidence = min(quality.score / 100.0, 1.0)
 
     return Document(
         filename=filename,
@@ -139,5 +141,5 @@ def build_document(filename: str, content: bytes) -> Document:
         ),
         quality=quality,
         pii=pii_result.detection,
-        confidence=min(quality.score / 100.0, 1.0),
+        confidence=extraction_confidence,
     )

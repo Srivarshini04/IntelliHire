@@ -1,0 +1,9 @@
+- industry_id: IND_000001
+  canonical: Software
+  aliases: [it software, software services]
+- industry_id: IND_000002
+  canonical: Financial Services
+  aliases: [fintech, banking]
+- industry_id: IND_000003
+  canonical: Healthcare
+  aliases: [health tech, medtech]

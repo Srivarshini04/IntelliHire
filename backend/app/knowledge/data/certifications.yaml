@@ -1,0 +1,8 @@
+- certification_id: CERT_000001
+  canonical: AWS Certified Solutions Architect
+  aliases: [aws solutions architect, saa]
+  category: Cloud
+- certification_id: CERT_000002
+  canonical: Certified Kubernetes Administrator
+  aliases: [cka]
+  category: DevOps

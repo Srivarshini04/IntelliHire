@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.0-flash"
     llm_provider: str = "gemini"
+    openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
-    pii_policy: str = "mask_external"
     upload_dir: str = "./uploads"
     cors_origins: list[str] = ["http://localhost:3000"]
 
@@ -30,7 +30,6 @@ class Settings(BaseSettings):
     github_api_base: str = "https://api.github.com"
 
     # LLM / LinkedIn (optional)
-    openai_api_key: str = ""
     llm_api_base: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"
     use_llm_linkedin: bool = True
@@ -38,6 +37,14 @@ class Settings(BaseSettings):
     linkdapi_api_base: str = "https://linkdapi.com/api/v1"
     linkedin_data_provider: str = "auto"
     linkedin_session_cookie: str = ""
+
+    # Document intelligence
+    pii_policy: str = "mask_external"  # detect_only | mask_external | mask_always
+    object_storage_backend: str = "local"  # local | s3 | minio
+    object_storage_bucket: str = "delulu-documents"
+    object_storage_endpoint: str = ""
+    object_storage_access_key: str = ""
+    object_storage_secret_key: str = ""
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

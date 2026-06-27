@@ -1,0 +1,12 @@
+- family_id: JOBFAM_000001
+  canonical: Backend Engineer
+  aliases: [backend developer, server-side engineer]
+  domain: Software Engineering
+- family_id: JOBFAM_000002
+  canonical: Data Scientist
+  aliases: [ml scientist, ai scientist]
+  domain: Data & AI
+- family_id: JOBFAM_000003
+  canonical: DevOps Engineer
+  aliases: [site reliability engineer, sre]
+  domain: Infrastructure

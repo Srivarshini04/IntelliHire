@@ -65,6 +65,8 @@ class GeminiProvider:
 
 
 class OpenAIProvider:
+    """Stub — swap provider via LLM_PROVIDER=openai without touching engines."""
+
     def __init__(self) -> None:
         self._settings = get_settings()
         self._model = self._settings.openai_model

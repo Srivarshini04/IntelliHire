@@ -115,3 +115,112 @@ GET /health
 ```
 
 **Response:** `{ "status": "ok", "service": "delulu-api" }`
+
+---
+
+## Document Intelligence (feat/document-understanding-engines)
+
+See [document-intelligence.md](./document-intelligence.md) for full architecture.
+
+### Upload Job Description
+
+```
+POST /jobs/upload
+Content-Type: multipart/form-data
+```
+
+**Input:** PDF or DOCX file
+
+**Response:**
+```json
+{
+  "document_id": "uuid",
+  "document": {
+    "filename": "Senior_AI_Engineer.pdf",
+    "filetype": "pdf",
+    "pages": 2,
+    "language": "en",
+    "raw_text": "...",
+    "cleaned_text": "...",
+    "sections": {},
+    "confidence": 0.98
+  },
+  "message": "Document extracted. Review text, then generate blueprint."
+}
+```
+
+### Generate Blueprint (draft)
+
+```
+POST /jobs/blueprint
+```
+
+**Request:**
+```json
+{
+  "document_id": "uuid",
+  "text": "optional reviewed text override"
+}
+```
+
+**Response:** Full `RoleBlueprint` with `ExtractedField` confidence + `versioning` metadata. Status: `draft`.
+
+### Approve & Save Job
+
+```
+POST /jobs
+```
+
+**Request:** `JobApproveRequest` — recruiter-edited blueprint after review.
+
+### Upload Resume (draft)
+
+```
+POST /candidates/upload
+Content-Type: multipart/form-data
+```
+
+**Response:** `CandidateProfile` draft with confidence per field. Review before `POST /candidates`.
+
+### ExtractedField shape (all AI fields)
+
+```json
+{
+  "value": "Senior",
+  "confidence": 0.94,
+  "source": "5+ years of backend engineering experience required"
+}
+```
+
+### Confidence gate (soft)
+
+Critical fields with RED confidence require explicit `confirmations` map:
+
+```json
+POST /jobs
+{
+  "title": "...",
+  "description": "...",
+  "blueprint": { ... },
+  "confirmations": { "experience_level": true }
+}
+```
+
+Non-critical low-confidence fields (e.g. preferred certifications at 0.41) do not block save.
+
+### Human feedback (on recruiter edit)
+
+Stored as `HUMAN_FEEDBACK` artifact when recruiter changes AI value:
+
+```json
+{ "field": "required_skills", "ai_value": "React", "human_value": "Next.js", "reason": "manual_edit" }
+```
+
+### Document quality (in upload response)
+
+```json
+"quality": { "score": 87, "recommend_manual_review": false }
+```
+
+If `score < 40`, UI should prompt OCR or manual review before blueprint generation.
+

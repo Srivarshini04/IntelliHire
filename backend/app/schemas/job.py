@@ -61,7 +61,7 @@ class JobResponse(BaseModel):
     job_id: UUID
     title: str
     description: str
-    role_blueprint: dict | None = None
+    role_blueprint: RoleBlueprint | dict | None = None
     document_id: UUID | None = None
     created_at: datetime | None = None
 
