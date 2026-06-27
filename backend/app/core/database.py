@@ -23,7 +23,7 @@ async def init_db() -> None:
         candidate,
         evidence,
         job,
-        ranking,
+        # ranking,
         scoring,
     )
 

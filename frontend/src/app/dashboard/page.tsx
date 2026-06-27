@@ -14,10 +14,15 @@ export default function DashboardPage() {
           <h2 className="mb-2 text-lg font-semibold">1. Create Job</h2>
           <p className="text-sm text-zinc-500">Paste a JD and generate a role blueprint.</p>
         </Link>
-        <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <Link
+          href="/jobs/new"
+          className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+        >
           <h2 className="mb-2 text-lg font-semibold">2. Upload Candidates</h2>
-          <p className="text-sm text-zinc-500">Add resumes, GitHub, and LinkedIn profiles.</p>
-        </div>
+          <p className="text-sm text-zinc-500">
+            Create or open a job, then add resumes, GitHub, LinkedIn, and LeetCode profiles.
+          </p>
+        </Link>
         <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           <h2 className="mb-2 text-lg font-semibold">3. View Rankings</h2>
           <p className="text-sm text-zinc-500">See fit scores, HTI, and hidden talent.</p>

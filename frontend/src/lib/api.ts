@@ -2,6 +2,7 @@ import type {
   Candidate,
   CandidateDetail,
   Job,
+  LeetCodeAnalysis,
   RankingItem,
 } from "./types";
 
@@ -54,4 +55,12 @@ export async function getRankings(jobId: string): Promise<RankingItem[]> {
 
 export async function getCandidateDetail(candidateId: string): Promise<CandidateDetail> {
   return request<CandidateDetail>(`/candidates/${candidateId}`);
+}
+
+export async function evaluateLeetCode(url: string): Promise<LeetCodeAnalysis> {
+  return request<LeetCodeAnalysis>("/leetcode/evaluate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ leetcode_url: url }),
+  });
 }

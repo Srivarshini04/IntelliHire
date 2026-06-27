@@ -62,6 +62,24 @@ export interface Explanation {
   reason: string;
 }
 
+export interface LeetCodeAnalysis {
+  username: string;
+  easy_solved: number;
+  medium_solved: number;
+  hard_solved: number;
+  total_solved: number;
+  problem_solving: number;
+  algorithm_depth: number;
+  coding_skill: number;
+  strengths: string[];
+  improvements: string[];
+  // Optional bonus signals surfaced by the engine.
+  tier?: string | null;
+  ranking?: number | null;
+  acceptance_rate?: number | null;
+  contest_rating?: number | null;
+}
+
 export interface CandidateDetail {
   candidate_id: string;
   name: string;
