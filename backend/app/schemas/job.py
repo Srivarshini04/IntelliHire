@@ -88,5 +88,6 @@ class JobResponse(BaseModel):
     description: str
     role_blueprint: RoleBlueprint | dict | None = None
     created_at: datetime | None = None
+    candidate_count: int = 0
 
     model_config = {"from_attributes": True}

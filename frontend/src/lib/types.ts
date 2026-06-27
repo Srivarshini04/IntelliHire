@@ -12,6 +12,7 @@ export interface Job {
   description: string;
   role_blueprint?: RoleBlueprint;
   created_at?: string;
+  candidate_count?: number;
 }
 
 export interface Candidate {
@@ -21,6 +22,17 @@ export interface Candidate {
   email?: string;
   github_url?: string;
   linkedin_url?: string;
+}
+
+export interface CandidateListItem {
+  candidate_id: string;
+  name: string;
+  email?: string;
+  github_url?: string;
+  linkedin_url?: string;
+  has_resume: boolean;
+  analyzed: boolean;
+  created_at?: string;
 }
 
 export interface RankingItem {

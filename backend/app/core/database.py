@@ -24,7 +24,6 @@ async def init_db() -> None:
         document_artifact,
         evidence,
         job,
-        ranking,
         scoring,
     )
 
