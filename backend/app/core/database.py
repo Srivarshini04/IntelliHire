@@ -38,7 +38,11 @@ async def init_db() -> None:
         candidate,
         document_artifact,
         evidence,
+        graph,
         job,
+        ledger,
+        ranking,
+        reasoning,
         scoring,
     )
 

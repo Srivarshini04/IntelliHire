@@ -1,0 +1,101 @@
+{
+  "candidate_id": "CAND_0004989",
+  "profile": {
+    "anonymized_name": "Rohan Deshpande",
+    "headline": "Senior Backend Engineer | Python, FastAPI, Distributed Systems, Search/Ranking",
+    "summary": "Backend engineer with 7.2 years of experience building production API platforms and the search/ranking infrastructure behind them. I've shipped end-to-end retrieval and recommendation systems to real users at a product company — hybrid BM25 + dense-embedding retrieval over OpenSearch with a learning-to-rank reranker, instrumented with NDCG/MRR offline eval and online A/B tests. My core toolkit is Python, FastAPI, PostgreSQL, Redis, and Kubernetes, and I've owned services from schema to on-call. I care about code quality and write a lot of design docs. I want to keep working at the intersection of backend systems and applied retrieval/ranking.",
+    "location": "Pune, Maharashtra",
+    "country": "India",
+    "years_of_experience": 7.2,
+    "current_title": "Senior Backend Engineer",
+    "current_company": "Loamate",
+    "current_company_size": "201-500",
+    "current_industry": "Software Products"
+  },
+  "career_history": [
+    {
+      "company": "Loamate",
+      "title": "Senior Backend Engineer",
+      "start_date": "2021-05-10",
+      "end_date": null,
+      "duration_months": 61,
+      "is_current": true,
+      "industry": "Software Products",
+      "company_size": "201-500",
+      "description": "Own the search and recommendations backend for a B2B marketplace serving ~2M monthly users. Built a v2 ranking system replacing rule-based scoring: hybrid retrieval (BM25 over OpenSearch + sentence-transformers dense vectors in FAISS) feeding an XGBoost learning-to-rank reranker. Designed the offline eval harness (NDCG@10, MRR) and the online A/B framework that proved a 14% lift in recruiter engagement. Services are FastAPI on Kubernetes; I own schema design in PostgreSQL, Redis caching, and the on-call rotation."
+    },
+    {
+      "company": "Innodata Systems",
+      "title": "Backend Engineer",
+      "start_date": "2018-06-01",
+      "end_date": "2021-04-30",
+      "duration_months": 35,
+      "is_current": false,
+      "industry": "Software Products",
+      "company_size": "501-1000",
+      "description": "Built and maintained REST APIs in Python (FastAPI and Flask) for a logistics platform processing ~800k events/day. Implemented an Elasticsearch-backed product search with relevance tuning, and migrated a monolith service to containerized microservices on Kubernetes. Wrote most of the integration test suite and introduced structured logging and tracing."
+    }
+  ],
+  "education": [
+    {
+      "institution": "College of Engineering Pune",
+      "degree": "B.Tech",
+      "field_of_study": "Computer Science",
+      "start_year": 2014,
+      "end_year": 2018,
+      "grade": "8.6 CGPA",
+      "tier": "tier_2"
+    }
+  ],
+  "skills": [
+    { "name": "Python", "proficiency": "expert", "endorsements": 64, "duration_months": 86 },
+    { "name": "FastAPI", "proficiency": "advanced", "endorsements": 41, "duration_months": 54 },
+    { "name": "PostgreSQL", "proficiency": "advanced", "endorsements": 38, "duration_months": 72 },
+    { "name": "Elasticsearch", "proficiency": "advanced", "endorsements": 22, "duration_months": 60 },
+    { "name": "OpenSearch", "proficiency": "advanced", "endorsements": 9, "duration_months": 30 },
+    { "name": "Embeddings / Dense Retrieval", "proficiency": "advanced", "endorsements": 17, "duration_months": 36 },
+    { "name": "Learning to Rank", "proficiency": "intermediate", "endorsements": 11, "duration_months": 30 },
+    { "name": "Kubernetes", "proficiency": "intermediate", "endorsements": 19, "duration_months": 42 },
+    { "name": "Redis", "proficiency": "advanced", "endorsements": 24, "duration_months": 66 },
+    { "name": "Docker", "proficiency": "advanced", "endorsements": 33, "duration_months": 70 }
+  ],
+  "certifications": [
+    { "name": "Certified Kubernetes Application Developer (CKAD)", "issuer": "CNCF", "year": 2022 }
+  ],
+  "languages": [
+    { "language": "English", "proficiency": "professional" },
+    { "language": "Hindi", "proficiency": "native" },
+    { "language": "Marathi", "proficiency": "native" }
+  ],
+  "redrob_signals": {
+    "profile_completeness_score": 92,
+    "signup_date": "2023-02-14",
+    "last_active_date": "2026-06-20",
+    "open_to_work_flag": true,
+    "profile_views_received_30d": 48,
+    "applications_submitted_30d": 6,
+    "recruiter_response_rate": 0.78,
+    "avg_response_time_hours": 5.5,
+    "skill_assessment_scores": {
+      "Python": 91,
+      "FastAPI": 87,
+      "PostgreSQL": 84,
+      "Information Retrieval": 79,
+      "System Design": 82
+    },
+    "connection_count": 612,
+    "endorsements_received": 271,
+    "notice_period_days": 30,
+    "expected_salary_range_inr_lpa": { "min": 38, "max": 48 },
+    "preferred_work_mode": "hybrid",
+    "willing_to_relocate": true,
+    "github_activity_score": 73,
+    "search_appearance_30d": 134,
+    "saved_by_recruiters_30d": 11,
+    "interview_completion_rate": 0.9,
+    "offer_acceptance_rate": 0.5,
+    "verified_email": true,
+    "verified_phone": true,
+    "linkedin_connected": true
+  }
+}

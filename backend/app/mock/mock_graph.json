@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "graph_id": "graph:CAND_0004989:JOB_BACKEND_1",
+  "candidate_id": "CAND_0004989",
+  "job_id": "JOB_BACKEND_1",
+  "nodes": [
+    {
+      "id": "candidate:CAND_0004989",
+      "type": "candidate",
+      "label": "Rohan Deshpande",
+      "attributes": { "years_of_experience": 7.2, "current_title": "Senior Backend Engineer" },
+      "confidence": 1.0,
+      "evidence_ids": []
+    },
+    {
+      "id": "skill:python",
+      "type": "skill",
+      "label": "Python",
+      "attributes": { "proficiency": "expert", "assessment_score": 91 },
+      "confidence": 0.93,
+      "evidence_ids": ["ev_redrob_0001", "ev_leetcode_0001"]
+    },
+    {
+      "id": "skill:fastapi",
+      "type": "skill",
+      "label": "FastAPI",
+      "attributes": { "proficiency": "advanced", "endorsements": 41 },
+      "confidence": 0.84,
+      "evidence_ids": ["ev_linkedin_0001", "ev_redrob_0001"]
+    },
+    {
+      "id": "skill:embeddings_retrieval",
+      "type": "skill",
+      "label": "Embeddings / Dense Retrieval",
+      "attributes": { "context": "hybrid BM25 + dense, production" },
+      "confidence": 0.86,
+      "evidence_ids": ["ev_resume_0001", "ev_github_0001"]
+    },
+    {
+      "id": "skill:ranking_evaluation",
+      "type": "skill",
+      "label": "Ranking Evaluation (NDCG/MRR/A-B)",
+      "attributes": { "metrics": ["NDCG@10", "MRR"], "online_lift": "14%" },
+      "confidence": 0.82,
+      "evidence_ids": ["ev_resume_0002"]
+    },
+    {
+      "id": "skill:llm_finetuning",
+      "type": "skill",
+      "label": "LLM Fine-tuning (LoRA)",
+      "attributes": { "self_listed": true, "corroboration": "none" },
+      "confidence": 0.45,
+      "evidence_ids": ["ev_linkedin_0002"]
+    },
+    {
+      "id": "repo:hybrid-ranker",
+      "type": "repository",
+      "label": "hybrid-ranker",
+      "attributes": { "stars": 142, "commits_by_candidate": 318, "language": "Python" },
+      "confidence": 0.88,
+      "evidence_ids": ["ev_github_0001"]
+    },
+    {
+      "id": "activity:commit_cadence",
+      "type": "contribution",
+      "label": "Sustained GitHub activity (score 73)",
+      "attributes": { "github_activity_score": 73, "prs_merged_12m": 64 },
+      "confidence": 0.8,
+      "evidence_ids": ["ev_github_0002"]
+    },
+    {
+      "id": "domain:talent_intelligence_search_ranking",
+      "type": "domain",
+      "label": "Search & Ranking / Talent Intelligence",
+      "attributes": { "scale_users": "2M MAU" },
+      "confidence": 0.83,
+      "evidence_ids": ["ev_resume_0001", "ev_resume_0002"]
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source_id": "candidate:CAND_0004989", "target_id": "skill:python", "type": "has_skill", "confidence": 0.93, "evidence_ids": ["ev_redrob_0001", "ev_leetcode_0001"] },
+    { "id": "e2", "source_id": "candidate:CAND_0004989", "target_id": "skill:fastapi", "type": "has_skill", "confidence": 0.84, "evidence_ids": ["ev_linkedin_0001"] },
+    { "id": "e3", "source_id": "candidate:CAND_0004989", "target_id": "skill:embeddings_retrieval", "type": "has_skill", "confidence": 0.86, "evidence_ids": ["ev_resume_0001"] },
+    { "id": "e4", "source_id": "candidate:CAND_0004989", "target_id": "skill:ranking_evaluation", "type": "has_skill", "confidence": 0.82, "evidence_ids": ["ev_resume_0002"] },
+    { "id": "e5", "source_id": "candidate:CAND_0004989", "target_id": "skill:llm_finetuning", "type": "has_skill", "confidence": 0.45, "evidence_ids": ["ev_linkedin_0002"] },
+    { "id": "e6", "source_id": "candidate:CAND_0004989", "target_id": "repo:hybrid-ranker", "type": "built", "confidence": 0.88, "evidence_ids": ["ev_github_0001"] },
+    { "id": "e7", "source_id": "skill:embeddings_retrieval", "target_id": "repo:hybrid-ranker", "type": "used_in", "confidence": 0.85, "evidence_ids": ["ev_github_0001", "ev_resume_0001"] },
+    { "id": "e8", "source_id": "skill:python", "target_id": "repo:hybrid-ranker", "type": "used_in", "confidence": 0.88, "evidence_ids": ["ev_github_0001"] },
+    { "id": "e9", "source_id": "candidate:CAND_0004989", "target_id": "activity:commit_cadence", "type": "contributed_to", "confidence": 0.8, "evidence_ids": ["ev_github_0002"] },
+    { "id": "e10", "source_id": "repo:hybrid-ranker", "target_id": "domain:talent_intelligence_search_ranking", "type": "in_domain", "confidence": 0.83, "evidence_ids": ["ev_resume_0001"] }
+  ],
+  "evidence_ledger": [
+    { "evidence_id": "ev_github_0001", "candidate_id": "CAND_0004989", "source": "github", "evidence_type": "repository", "entity_ref": "repo:hybrid-ranker", "claim": "Owns and is primary committer on 'hybrid-ranker', a production hybrid BM25 + dense retrieval reranking service.", "polarity": "supports", "confidence": 0.88, "supporting_node_id": "repo:hybrid-ranker", "provenance": { "stars": 142, "commits_by_candidate": 318 }, "timestamp": "2026-06-25T09:00:00", "verification_status": "unverified" },
+    { "evidence_id": "ev_github_0002", "candidate_id": "CAND_0004989", "source": "github", "evidence_type": "activity", "entity_ref": "activity:commit_cadence", "claim": "Sustained commit cadence; github_activity_score 73.", "polarity": "supports", "confidence": 0.8, "supporting_node_id": "activity:commit_cadence", "provenance": { "github_activity_score": 73 }, "timestamp": "2026-06-25T09:01:00", "verification_status": "corroborated" },
+    { "evidence_id": "ev_resume_0001", "candidate_id": "CAND_0004989", "source": "resume", "evidence_type": "experience", "entity_ref": "skill:embeddings_retrieval", "claim": "Shipped a v2 hybrid retrieval system to ~2M monthly users.", "polarity": "supports", "confidence": 0.85, "supporting_node_id": "skill:embeddings_retrieval", "provenance": { "company": "Loamate" }, "timestamp": "2026-06-25T09:02:00", "verification_status": "corroborated" },
+    { "evidence_id": "ev_resume_0002", "candidate_id": "CAND_0004989", "source": "resume", "evidence_type": "achievement", "entity_ref": "skill:ranking_evaluation", "claim": "Designed NDCG/MRR offline + A/B online eval; 14% recruiter-engagement lift.", "polarity": "supports", "confidence": 0.82, "supporting_node_id": "skill:ranking_evaluation", "provenance": { "online_lift": "14%" }, "timestamp": "2026-06-25T09:03:00", "verification_status": "unverified" },
+    { "evidence_id": "ev_redrob_0001", "candidate_id": "CAND_0004989", "source": "redrob", "evidence_type": "assessment", "entity_ref": "skill:python", "claim": "Redrob assessment Python 91, FastAPI 87, IR 79.", "polarity": "supports", "confidence": 0.86, "supporting_node_id": "skill:python", "provenance": { "Python": 91 }, "timestamp": "2026-06-25T09:04:00", "verification_status": "verified" },
+    { "evidence_id": "ev_linkedin_0001", "candidate_id": "CAND_0004989", "source": "linkedin", "evidence_type": "skill", "entity_ref": "skill:fastapi", "claim": "41 endorsements for FastAPI, advanced, 54 months.", "polarity": "supports", "confidence": 0.7, "supporting_node_id": "skill:fastapi", "provenance": { "endorsements": 41 }, "timestamp": "2026-06-25T09:05:00", "verification_status": "corroborated" },
+    { "evidence_id": "ev_leetcode_0001", "candidate_id": "CAND_0004989", "source": "leetcode", "evidence_type": "assessment", "entity_ref": "skill:python", "claim": "540 problems solved, rating ~1950, Python.", "polarity": "supports", "confidence": 0.72, "supporting_node_id": "skill:python", "provenance": { "problems_solved": 540 }, "timestamp": "2026-06-25T09:06:00", "verification_status": "unverified" },
+    { "evidence_id": "ev_linkedin_0002", "candidate_id": "CAND_0004989", "source": "linkedin", "evidence_type": "skill", "entity_ref": "skill:llm_finetuning", "claim": "Self-listed LLM fine-tuning (LoRA) with no corroborating projects.", "polarity": "contradicts", "confidence": 0.55, "supporting_node_id": "skill:llm_finetuning", "provenance": { "corroborating_repos": 0 }, "timestamp": "2026-06-25T09:07:00", "verification_status": "contradicted" }
+  ],
+  "metadata": { "built_by": "mock", "fusion": "max-over-supports" }
+}
