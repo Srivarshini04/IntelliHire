@@ -22,3 +22,6 @@ class Job(Base):
 
     candidates: Mapped[list["Candidate"]] = relationship(back_populates="job")
     rankings: Mapped[list["Ranking"]] = relationship(back_populates="job")
+
+    # --- DELULU v2 persistence (back-reference to the new candidate_rankings table) ---
+    v2_rankings: Mapped[list["CandidateRanking"]] = relationship(back_populates="job")  # noqa: F821

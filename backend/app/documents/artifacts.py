@@ -94,3 +94,40 @@ async def approve_artifact(db: AsyncSession, artifact_id: UUID) -> None:
     if record:
         record.status = ArtifactStatus.APPROVED.value
         record.approved_at = datetime.now(timezone.utc)
+
+
+async def load_latest_entity_artifact(
+    db: AsyncSession,
+    entity_type: str,
+    entity_id: UUID,
+    artifact_type: ArtifactType,
+) -> DocumentArtifactRecord | None:
+    result = await db.execute(
+        select(DocumentArtifactRecord)
+        .where(
+            DocumentArtifactRecord.entity_type == entity_type,
+            DocumentArtifactRecord.entity_id == entity_id,
+            DocumentArtifactRecord.artifact_type == artifact_type.value,
+        )
+        .order_by(DocumentArtifactRecord.created_at.desc())
+        .limit(1)
+    )
+    return result.scalar_one_or_none()
+
+
+async def list_entity_artifacts(
+    db: AsyncSession,
+    entity_type: str,
+    entity_id: UUID,
+    artifact_type: ArtifactType,
+) -> list[DocumentArtifactRecord]:
+    result = await db.execute(
+        select(DocumentArtifactRecord)
+        .where(
+            DocumentArtifactRecord.entity_type == entity_type,
+            DocumentArtifactRecord.entity_id == entity_id,
+            DocumentArtifactRecord.artifact_type == artifact_type.value,
+        )
+        .order_by(DocumentArtifactRecord.created_at.asc())
+    )
+    return list(result.scalars().all())

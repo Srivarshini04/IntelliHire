@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "decision_id": "decision:CAND_0004989:JOB_BACKEND_1",
+  "candidate_id": "CAND_0004989",
+  "job_id": "JOB_BACKEND_1",
+  "recommendation": "strong_hire",
+  "confidence": 0.84,
+  "derived_score": 0.87,
+  "reasons": [
+    "Shipped production hybrid retrieval + ranking to ~2M MAU at a product company — hits the JD's central must-have.",
+    "Designed rigorous offline (NDCG@10, MRR) and online A/B evaluation with a measured 14% engagement lift.",
+    "Strong, multi-source-corroborated Python and FastAPI signal (Redrob 91, LeetCode 540, endorsements).",
+    "Genuinely available: recently active, 78% recruiter response rate, 30-day notice, willing to relocate to Pune."
+  ],
+  "reservations": [
+    "Self-listed LLM fine-tuning (LoRA) is contradicted by absence of corroborating projects — do not credit fine-tuning depth.",
+    "No managed vector-database (Pinecone/Weaviate/Qdrant) operational experience; relies on FAISS + OpenSearch.",
+    "The 14% A/B lift is self-reported and not independently verified."
+  ],
+  "interview_focus": [
+    {
+      "topic": "Production retrieval operations",
+      "rationale": "Verify operational depth on embedding drift, index refresh, and retrieval-quality regression — explicit JD must-have.",
+      "suggested_questions": [
+        "Walk me through how you detected and handled embedding drift in the hybrid-ranker system.",
+        "How did you refresh the FAISS/OpenSearch index without serving stale results?"
+      ]
+    },
+    {
+      "topic": "Ranking evaluation rigor",
+      "rationale": "Confirm offline-to-online correlation reasoning behind the reported 14% lift.",
+      "suggested_questions": [
+        "How well did your offline NDCG/MRR predict the online A/B outcome?",
+        "What guardrail metrics did you watch during the A/B test?"
+      ]
+    },
+    {
+      "topic": "LLM reranking / fine-tuning depth",
+      "rationale": "Addresses the contradicted self-listed LoRA claim and the nice-to-have gap.",
+      "suggested_questions": [
+        "Describe any hands-on fine-tuning work; when would you fine-tune vs. prompt for reranking?"
+      ]
+    }
+  ],
+  "missing_evidence": [
+    "Independent verification of the online A/B 14% lift.",
+    "Evidence of managed vector-database operations."
+  ],
+  "recommendations": [
+    { "action": "fast_track", "rationale": "Rare, well-corroborated production search/ranking fit who is genuinely available; move quickly.", "priority": 1 },
+    { "action": "interview", "rationale": "Technical screen on retrieval operations and evaluation rigor to confirm self-reported metrics.", "priority": 2 }
+  ],
+  "summary": "Strong hire. Production-proven search/ranking backend engineer matching the core must-haves with strong Python and real availability; only minor nice-to-have gaps and one recorded, down-weighted contradiction (unsubstantiated LoRA claim).",
+  "decided_at": "2026-06-25T10:00:00",
+  "metadata": { "projected_from": "reasoning:CAND_0004989:JOB_BACKEND_1" }
+}
