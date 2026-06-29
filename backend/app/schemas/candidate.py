@@ -16,6 +16,7 @@ from app.schemas.fields import (
     SkillField,
     VersioningMeta,
 )
+from app.services.evidence.base import EvidenceObject
 
 
 class CandidateProfile(BaseModel):
@@ -135,4 +136,5 @@ class CandidateDetailResponse(BaseModel):
     risk: RiskProfileSchema | None = None
     hti: HTIProfileSchema | None = None
     evidence: list[EvidenceSchema] = Field(default_factory=list)
+    standardized_evidence: list[EvidenceObject] = Field(default_factory=list)
     explanation: ExplanationSchema | None = None

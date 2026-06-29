@@ -24,6 +24,7 @@ from app.schemas.candidate import (
 )
 from app.schemas.ranking import AnalyzeResponse
 from app.services.analysis_pipeline import analyze_candidate, analyze_candidate_in_background
+from app.services.evidence.normalizer import normalize
 from app.services.ranking.explainability_engine import generate_explanation
 
 router = APIRouter(prefix="/candidates", tags=["candidates"])
@@ -153,6 +154,9 @@ async def get_candidate_detail(candidate_id: uuid.UUID, db: AsyncSession = Depen
                 processed_content=e.processed_content,
             )
             for e in candidate.evidence
+        ],
+        standardized_evidence=[
+            normalize(e.source_type, e.processed_content or {}) for e in candidate.evidence
         ],
         explanation=explanation,
     )
