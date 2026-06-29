@@ -1,0 +1,64 @@
+{
+  "ranked_list_id": "rankedlist:JOB_BACKEND_1:rerank",
+  "job_id": "JOB_BACKEND_1",
+  "stage": "rerank",
+  "items": [
+    {
+      "ranking_id": "ranking:JOB_BACKEND_1:CAND_0004989",
+      "job_id": "JOB_BACKEND_1",
+      "candidate_id": "CAND_0004989",
+      "rank": 1,
+      "score": 0.87,
+      "stage": "rerank",
+      "reasoning": "Production hybrid retrieval + ranking shipped to 2M MAU, rigorous NDCG/MRR + A/B evaluation, strong corroborated Python, and genuinely available. One unsubstantiated LoRA claim recorded but down-weighted.",
+      "decision_ref": "decision:CAND_0004989:JOB_BACKEND_1",
+      "metadata": { "recommendation": "strong_hire" }
+    },
+    {
+      "ranking_id": "ranking:JOB_BACKEND_1:CAND_0002231",
+      "job_id": "JOB_BACKEND_1",
+      "candidate_id": "CAND_0002231",
+      "rank": 2,
+      "score": 0.79,
+      "stage": "rerank",
+      "reasoning": "Built a recommendation system at a product company and has solid dense-retrieval experience, but evaluation rigor (offline-to-online) is thinner and recruiter responsiveness is moderate.",
+      "decision_ref": null,
+      "metadata": { "recommendation": "hire" }
+    },
+    {
+      "ranking_id": "ranking:JOB_BACKEND_1:CAND_0007740",
+      "job_id": "JOB_BACKEND_1",
+      "candidate_id": "CAND_0007740",
+      "rank": 3,
+      "score": 0.66,
+      "stage": "rerank",
+      "reasoning": "Strong Python and FastAPI backend with Elasticsearch search, but no embeddings/dense retrieval evidence — a material must-have gap for the ranking mandate.",
+      "decision_ref": null,
+      "metadata": { "recommendation": "lean_hire" }
+    },
+    {
+      "ranking_id": "ranking:JOB_BACKEND_1:CAND_0009152",
+      "job_id": "JOB_BACKEND_1",
+      "candidate_id": "CAND_0009152",
+      "rank": 4,
+      "score": 0.41,
+      "stage": "rerank",
+      "reasoning": "Many AI keywords listed as skills, but career history is consulting-only (TCS) with no production deployment to real users — hits explicit JD red flags.",
+      "decision_ref": null,
+      "metadata": { "recommendation": "no_hire" }
+    },
+    {
+      "ranking_id": "ranking:JOB_BACKEND_1:CAND_0003318",
+      "job_id": "JOB_BACKEND_1",
+      "candidate_id": "CAND_0003318",
+      "rank": 5,
+      "score": 0.28,
+      "stage": "rerank",
+      "reasoning": "Perfect-on-paper retrieval skill list but hasn't logged in for 6 months and has a 5% recruiter response rate — effectively unavailable, so down-weighted heavily despite keyword match.",
+      "decision_ref": null,
+      "metadata": { "recommendation": "insufficient_evidence" }
+    }
+  ],
+  "generated_at": "2026-06-25T10:05:00",
+  "metadata": { "pool_size": 100000, "shortlist_size": 100, "primary_candidate": "CAND_0004989" }
+}

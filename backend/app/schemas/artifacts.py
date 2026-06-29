@@ -23,6 +23,10 @@ class ArtifactType(str, Enum):
     PROFILE_APPROVED = "PROFILE_APPROVED"
     HUMAN_FEEDBACK = "HUMAN_FEEDBACK"
     BLUEPRINT_DIFF = "BLUEPRINT_DIFF"
+    BLUEPRINT_METRICS = "BLUEPRINT_METRICS"
+    ROLE_CLASSIFICATION = "ROLE_CLASSIFICATION"
+    CANDIDATE_GRAPH = "CANDIDATE_GRAPH"
+    EVIDENCE_LEDGER = "EVIDENCE_LEDGER"
 
 
 class ArtifactStatus(str, Enum):
@@ -39,7 +43,7 @@ class DocumentArtifact(BaseModel):
     artifact_version: int = 1
     status: ArtifactStatus = ArtifactStatus.DRAFT
     payload: dict[str, Any]
-    storage_uri: str | None = None  # for RAW_DOCUMENT binary in object storage
+    storage_uri: str | None = None
     created_by: str | None = None
     created_at: datetime
     approved_at: datetime | None = None
@@ -49,7 +53,7 @@ class DocumentArtifact(BaseModel):
 
 class BlueprintDiffItem(BaseModel):
     field: str
-    change_type: str  # added | removed | modified
+    change_type: str
     old_value: Any = None
     new_value: Any = None
 

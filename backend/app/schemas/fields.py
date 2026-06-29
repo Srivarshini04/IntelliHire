@@ -12,13 +12,13 @@ T = TypeVar("T")
 
 
 class ConfidenceLevel(str, Enum):
-    GREEN = "green"    # > 0.85 — save
-    YELLOW = "yellow"  # 0.60–0.85 — warn
-    RED = "red"        # < 0.60 — require confirmation on critical fields
+    GREEN = "green"
+    YELLOW = "yellow"
+    RED = "red"
 
 
 class SourceSpan(BaseModel):
-    """Character-level provenance for UI source highlighting (ChatGPT-style citations)."""
+    """Character-level provenance for UI source highlighting."""
 
     text: str
     page: int | None = None
@@ -77,12 +77,12 @@ class SkillField(BaseModel):
         return ConfidenceLevel.RED
 
 
-# Critical fields requiring recruiter confirmation when RED
 CRITICAL_BLUEPRINT_FIELDS = frozenset({
     "role_title",
     "required_skills",
     "experience_level",
     "employment_type",
+    "capability_weights",
 })
 
 CRITICAL_PROFILE_FIELDS = frozenset({
@@ -135,6 +135,8 @@ class VersioningMeta(BaseModel):
     prompt_version: str = "1.0.0"
     llm_model: str = ""
     generated_at: datetime = Field(default_factory=datetime.utcnow)
+    approved_by: str | None = None
+    approved_at: datetime | None = None
 
 
 class ExperienceEntry(BaseModel):
@@ -162,7 +164,7 @@ class HumanFeedback(BaseModel):
     field: str
     ai_value: str
     human_value: str
-    reason: str = "manual_edit"  # manual_edit | reject | add
+    reason: str = "manual_edit"
     document_id: str | None = None
     artifact_id: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

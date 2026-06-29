@@ -15,6 +15,7 @@ build/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+*.pyc
 
 # Node
 node_modules/
@@ -26,6 +27,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
 # Environment
 .env
@@ -54,3 +56,4 @@ datasets/generated/
 
 # OS
 Thumbs.db
+challenge_data/

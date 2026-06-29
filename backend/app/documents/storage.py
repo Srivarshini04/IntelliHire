@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from uuid import UUID
 
@@ -33,7 +32,6 @@ class ObjectStorage:
         return f"file://{dest.resolve()}"
 
     def _store_s3(self, document_id: UUID, filename: str, content: bytes) -> str:
-        # Phase 1: boto3 integration
         settings = get_settings()
         key = f"documents/{document_id}/{filename}"
         try:
@@ -48,7 +46,6 @@ class ObjectStorage:
             client.put_object(Bucket=self.bucket, Key=key, Body=content)
             return f"s3://{self.bucket}/{key}"
         except ImportError:
-            # Fallback to local until boto3 configured
             return self._store_local(document_id, filename, content)
 
 

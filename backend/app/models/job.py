@@ -17,7 +17,11 @@ class Job(Base):
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(Text)
     role_blueprint: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    document_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     candidates: Mapped[list["Candidate"]] = relationship(back_populates="job")
     rankings: Mapped[list["Ranking"]] = relationship(back_populates="job")
+
+    # --- DELULU v2 persistence (back-reference to the new candidate_rankings table) ---
+    v2_rankings: Mapped[list["CandidateRanking"]] = relationship(back_populates="job")  # noqa: F821

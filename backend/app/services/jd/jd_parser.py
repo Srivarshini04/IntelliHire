@@ -14,6 +14,8 @@ import re
 from pydantic import BaseModel, Field
 
 from app.llm.factory import get_llm_provider
+from app.schemas.fields import ExtractedField, SkillField
+from app.schemas.job import RoleBlueprint
 from app.skills.normalizer import normalize_skills
 
 logger = logging.getLogger(__name__)
@@ -45,7 +47,6 @@ def _deterministic_skills(description: str) -> list[str]:
     """Pull an explicit, comma/and-separated skill list out of the JD text."""
     if not description:
         return []
-    # Collapse "and"/"&"/"or", slashes, semicolons and newlines into commas.
     text = re.sub(r"\s+(?:and|&|or)\s+", ", ", description, flags=re.I)
     text = re.sub(r"[/;\n]+", ", ", text)
 
@@ -56,7 +57,6 @@ def _deterministic_skills(description: str) -> list[str]:
             words.pop(0)
         while words and words[-1].lower() in _FILLER:
             words.pop()
-        # Skip empties and prose fragments (a real skill is a short noun phrase).
         if not words or len(words) > 4:
             continue
         candidate = " ".join(words).strip(" .")
@@ -78,7 +78,19 @@ async def _llm_skills(title: str, description: str) -> list[str]:
     return [s.strip() for s in result.skills if s and s.strip()]
 
 
-async def parse_job_description(title: str, description: str) -> dict:
+def _skills_to_fields(raw_skills: list[str]) -> list[SkillField]:
+    return [
+        SkillField(
+            name=skill,
+            normalized_name=skill.lower(),
+            canonical_name=skill,
+            confidence=0.7,
+        )
+        for skill in normalize_skills(raw_skills)
+    ]
+
+
+async def parse_job_description(title: str, description: str) -> RoleBlueprint:
     """Build a role blueprint from the pasted JD, extracting its real skills."""
     raw_skills: list[str] = []
     try:
@@ -91,16 +103,19 @@ async def parse_job_description(title: str, description: str) -> dict:
     if not raw_skills:
         raw_skills = _deterministic_skills(description)
 
-    if raw_skills:
-        skills = normalize_skills(raw_skills)
-    else:
+    if not raw_skills:
         logger.warning("No skills extracted from JD; falling back to legacy defaults")
-        skills = normalize_skills(["Python", "LLMs", "FastAPI"])
+        raw_skills = ["Python", "LLMs", "FastAPI"]
 
-    return {
-        "role": title,
-        "skills": skills,
-        "behavioral_traits": ["Ownership", "Execution", "Learning"],
-        "weights": dict(_DEFAULT_WEIGHTS),
-        "required_evidence": ["projects", "github", "production_systems"],
-    }
+    return RoleBlueprint(
+        role_title=ExtractedField(value=title, confidence=0.5, source=title),
+        experience_level=ExtractedField(value="mid", confidence=0.5),
+        required_skills=_skills_to_fields(raw_skills),
+        behavioral_traits=[
+            ExtractedField(value="Ownership", confidence=0.5),
+            ExtractedField(value="Execution", confidence=0.5),
+            ExtractedField(value="Learning", confidence=0.5),
+        ],
+        capability_weights=dict(_DEFAULT_WEIGHTS),
+        required_evidence=["projects", "github", "production_systems"],
+    )

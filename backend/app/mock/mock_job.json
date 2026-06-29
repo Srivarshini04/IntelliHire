@@ -1,0 +1,70 @@
+{
+  "job_id": "JOB_BACKEND_1",
+  "title": "Senior Backend Engineer — Search & Ranking (Founding Team)",
+  "company": "Redrob AI",
+  "location": "Pune / Noida, India (Hybrid, relocation supported)",
+  "employment_type": "Full-time",
+  "experience_required": "5-9 years",
+  "description": "Own the intelligence layer of a Series A talent-intelligence product: the retrieval, ranking, and matching backend that decides what recruiters and candidates see. You will ship a v2 ranking system (hybrid retrieval + LLM/learning-to-rank reranking), stand up offline+online evaluation, and drive long-term candidate-JD matching architecture at scale. This role writes production code; strong Python and rigorous ranking evaluation are non-negotiable.",
+  "role_dna": {
+    "schema_version": "1.0",
+    "role_dna_id": "roledna:JOB_BACKEND_1",
+    "job_id": "JOB_BACKEND_1",
+    "role_summary": "A founding-team senior backend engineer who owns production retrieval and ranking systems — embeddings-based and hybrid search over a vector/keyword store, a learning-to-rank or LLM reranker, and rigorous NDCG/MRR offline plus online A/B evaluation — while staying scrappy enough to ship a working ranker in a week. Tilts toward shipper over researcher; strong Python and production deployment experience are mandatory.",
+    "must_have_skills": [
+      "skill:python",
+      "skill:embeddings_retrieval",
+      "skill:vector_search",
+      "skill:ranking_evaluation",
+      "skill:fastapi"
+    ],
+    "nice_to_have_skills": [
+      "skill:llm_finetuning",
+      "skill:learning_to_rank",
+      "skill:kubernetes",
+      "skill:hr_tech_domain",
+      "skill:open_source"
+    ],
+    "domain": "talent_intelligence_search_ranking",
+    "engineering_level": "senior",
+    "ownership_level": "high",
+    "ambiguity_tolerance": "high",
+    "communication_need": "high",
+    "learning_requirement": "high",
+    "research_requirement": "low",
+    "collaboration_requirement": "high",
+    "delivery_expectation": "critical",
+    "system_design_expectation": "high",
+    "coding_requirement": "critical",
+    "culture": [
+      "async-first, writes a lot",
+      "disagrees openly, decides quickly",
+      "moves fast, breaks internal assumptions not user-facing systems",
+      "plans to stay 3+ years"
+    ],
+    "red_flags": [
+      "pure research background without production deployment",
+      "AI experience limited to <12 months of LangChain-on-OpenAI",
+      "senior who hasn't shipped production code in 18+ months",
+      "title-chaser switching companies every 1.5 years",
+      "entire career at consulting firms (TCS/Infosys/Wipro/Accenture/Cognizant/Capgemini)",
+      "primary expertise in CV/speech/robotics without NLP/IR exposure",
+      "low platform availability (inactive, low recruiter response rate)"
+    ],
+    "growth_path": "Grows the AI engineering org from 4 to 12 engineers; mentors new hires and drives long-term matching architecture.",
+    "capability_weights": {
+      "retrieval_ranking": 0.3,
+      "python_code_quality": 0.2,
+      "evaluation_rigor": 0.2,
+      "production_systems": 0.15,
+      "ownership_communication": 0.1,
+      "availability": 0.05
+    },
+    "required_evidence": ["resume", "github", "redrob"],
+    "derived_from_blueprint_version": "blueprint:JOB_BACKEND_1:v1",
+    "metadata": {
+      "source_jd": "challenge_data/job_description.txt",
+      "notes": "Materiality is JD-meaning over JD-keywords; behavioural availability signals down-weight perfect-on-paper-but-absent candidates."
+    }
+  }
+}

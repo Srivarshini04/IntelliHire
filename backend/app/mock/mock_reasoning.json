@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "reasoning_id": "reasoning:CAND_0004989:JOB_BACKEND_1",
+  "candidate_id": "CAND_0004989",
+  "job_id": "JOB_BACKEND_1",
+  "claims": [
+    {
+      "claim_id": "claim_retrieval",
+      "statement": "Has shipped a production hybrid retrieval + ranking system to real users at a product company.",
+      "entity_refs": ["skill:embeddings_retrieval", "repo:hybrid-ranker", "domain:talent_intelligence_search_ranking"],
+      "supporting_evidence_ids": ["ev_resume_0001", "ev_github_0001"],
+      "counter_evidence_ids": [],
+      "confidence": 0.86,
+      "materiality": "critical",
+      "conclusion": "Directly matches the JD's core must-have: embeddings-based retrieval deployed to real users, not a tutorial demo."
+    },
+    {
+      "claim_id": "claim_eval",
+      "statement": "Evaluates ranking systems rigorously with offline NDCG/MRR and online A/B testing.",
+      "entity_refs": ["skill:ranking_evaluation"],
+      "supporting_evidence_ids": ["ev_resume_0002"],
+      "counter_evidence_ids": [],
+      "confidence": 0.82,
+      "materiality": "high",
+      "conclusion": "Satisfies the explicit must-have around designing evaluation frameworks for ranking systems."
+    },
+    {
+      "claim_id": "claim_python",
+      "statement": "Strong Python with code-quality signal across assessment, contest, and production repos.",
+      "entity_refs": ["skill:python", "skill:fastapi"],
+      "supporting_evidence_ids": ["ev_redrob_0001", "ev_leetcode_0001", "ev_linkedin_0001"],
+      "counter_evidence_ids": [],
+      "confidence": 0.9,
+      "materiality": "critical",
+      "conclusion": "Meets the 'strong Python, we care about code quality' bar with corroborating multi-source signal."
+    },
+    {
+      "claim_id": "claim_finetuning",
+      "statement": "Claims LLM fine-tuning (LoRA) but depth is unsubstantiated.",
+      "entity_refs": ["skill:llm_finetuning"],
+      "supporting_evidence_ids": [],
+      "counter_evidence_ids": ["ev_linkedin_0002"],
+      "confidence": 0.4,
+      "materiality": "low",
+      "conclusion": "Nice-to-have only; the self-listed claim is contradicted by absence of projects, so do not credit fine-tuning depth. Not disqualifying."
+    },
+    {
+      "claim_id": "claim_availability",
+      "statement": "Actively available on platform with high recruiter responsiveness.",
+      "entity_refs": ["activity:commit_cadence"],
+      "supporting_evidence_ids": ["ev_github_0002"],
+      "counter_evidence_ids": [],
+      "confidence": 0.8,
+      "materiality": "medium",
+      "conclusion": "Recently active, 78% recruiter response rate, 30-day notice — genuinely reachable, unlike perfect-on-paper-but-absent candidates."
+    }
+  ],
+  "gaps": [
+    {
+      "requirement": "Production LLM-based reranking experience",
+      "entity_ref": "skill:llm_finetuning",
+      "severity": "minor",
+      "note": "JD lists LLM fine-tuning as nice-to-have; candidate's claim is unsubstantiated (contradicted), so treat as a gap to probe, not a blocker."
+    },
+    {
+      "requirement": "Dedicated vector database operations (Pinecone/Weaviate/Qdrant/Milvus)",
+      "entity_ref": "skill:vector_search",
+      "severity": "moderate",
+      "note": "Evidence shows FAISS + OpenSearch/Elasticsearch hybrid, but no managed vector DB; transferable but worth confirming operational depth (index refresh, drift)."
+    }
+  ],
+  "uncertainties": [
+    "Online A/B 14% lift is self-reported on resume and not independently corroborated.",
+    "Depth of learning-to-rank modeling (XGBoost) vs. mostly heuristic reranking is unclear from current evidence."
+  ],
+  "overall_confidence": 0.84,
+  "summary": "Strong, well-corroborated fit for the search/ranking backend must-haves (production hybrid retrieval, rigorous evaluation, strong Python), genuinely available, with only minor/moderate nice-to-have gaps. The one contradiction (self-listed LLM fine-tuning without projects) is recorded and down-weighted, not subtracted.",
+  "metadata": { "reasoned_against": "roledna:JOB_BACKEND_1" }
+}

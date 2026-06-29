@@ -95,6 +95,46 @@ def _extract_docx(content: bytes) -> tuple[str, int]:
     return "\n\n".join(paragraphs), 1
 
 
+def build_document_from_text(text: str, *, filename: str = "pasted.txt") -> Document:
+    settings = get_settings()
+    content = text.encode("utf-8")
+    original_text = text
+    cleaned = clean_text(original_text)
+
+    pii_result = apply_pii_policy(
+        original_text,
+        PiiPolicy(settings.pii_policy),
+        is_external_llm=True,
+    )
+
+    quality = score_document_quality(cleaned, 1, "txt")
+    sections = detect_sections(cleaned)
+    content_hash = hashlib.sha256(content).hexdigest()
+    extraction_confidence = min(quality.score / 100.0, 1.0)
+
+    return Document(
+        filename=filename,
+        filetype="txt",
+        pages=1,
+        language=quality.language_detected,
+        original_text=original_text,
+        masked_text=pii_result.masked_text,
+        raw_text=original_text,
+        cleaned_text=cleaned,
+        sections=sections,
+        metadata=DocumentMetadata(
+            file_size_bytes=len(content),
+            page_count=1,
+            content_hash=content_hash,
+            extractor_version=EXTRACTOR_VERSION,
+            pii_policy=PiiPolicy(settings.pii_policy),
+        ),
+        quality=quality,
+        pii=pii_result.detection,
+        confidence=extraction_confidence,
+    )
+
+
 def build_document(filename: str, content: bytes) -> Document:
     settings = get_settings()
     filetype = validate_filetype(filename)
@@ -110,7 +150,6 @@ def build_document(filename: str, content: bytes) -> Document:
     quality = score_document_quality(cleaned, page_count, filetype)
     sections = detect_sections(cleaned)
     content_hash = hashlib.sha256(content).hexdigest()
-
     extraction_confidence = min(quality.score / 100.0, 1.0)
 
     return Document(

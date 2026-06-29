@@ -1,14 +1,22 @@
-"""Document upload API with artifact persistence."""
+"""Document upload and blueprint intelligence API."""
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.documents.artifacts import save_artifact
+from app.documents.artifacts import load_document, save_artifact
+from app.documents.service import build_document, build_document_from_text
 from app.documents.storage import get_object_storage
-from app.documents.service import build_document
+from app.intelligence.jd.approval_service import ApprovalError, ApprovalService
+from app.intelligence.jd.orchestrator import BlueprintGenerationError, BlueprintGenerationOrchestrator
 from app.schemas.artifacts import ArtifactType
-from app.schemas.job import BlueprintDraftResponse, BlueprintGenerateRequest, JobUploadResponse
+from app.schemas.job import (
+    BlueprintDraftResponse,
+    BlueprintGenerateRequest,
+    JobApproveRequest,
+    JobApproveResponse,
+    JobUploadResponse,
+)
 
 router = APIRouter(prefix="/jobs", tags=["document-intelligence"])
 
@@ -69,8 +77,59 @@ async def upload_job_description(
 
 
 @router.post("/blueprint", response_model=BlueprintDraftResponse)
-async def generate_blueprint(request: BlueprintGenerateRequest):
-    raise HTTPException(
-        status_code=501,
-        detail="Blueprint generator not implemented — see feat/jd-intelligence branch",
+async def generate_blueprint(
+    request: BlueprintGenerateRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    if request.document_id:
+        document = await load_document(db, request.document_id)
+        if not document:
+            raise HTTPException(status_code=404, detail="Document not found")
+    elif request.text:
+        document = build_document_from_text(request.text)
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide document_id from /jobs/upload or raw text",
+        )
+
+    try:
+        blueprint, classification, metrics = await BlueprintGenerationOrchestrator.run(
+            document,
+            db=db,
+        )
+    except BlueprintGenerationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "message": str(exc),
+                "metrics": exc.metrics.model_dump(mode="json"),
+            },
+        ) from exc
+
+    return BlueprintDraftResponse(
+        blueprint=blueprint,
+        document_id=document.id,
+        status=metrics.status,
+        classification=classification.model_dump(),
+        metrics=metrics.model_dump(mode="json"),
+        warnings=metrics.validation_warnings,
     )
+
+
+@router.post("/approve", response_model=JobApproveResponse)
+async def approve_blueprint(
+    request: JobApproveRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        return await ApprovalService.approve(db, request)
+    except ApprovalError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "message": str(exc),
+                "errors": exc.errors,
+                "warnings": exc.warnings,
+            },
+        ) from exc

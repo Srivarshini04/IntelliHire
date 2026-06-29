@@ -11,9 +11,9 @@ from app.llm.gemini import GeminiProvider, OpenAIProvider
 
 @lru_cache
 def get_llm_provider() -> LLMProvider:
-  provider = get_settings().llm_provider.lower()
-  if provider == "gemini":
-    return GeminiProvider()
-  if provider == "openai":
-    return OpenAIProvider()
-  raise ValueError(f"Unknown LLM_PROVIDER: {provider}")
+    provider = get_settings().llm_provider.lower()
+    if provider == "gemini":
+        return GeminiProvider()
+    if provider == "openai":
+        return OpenAIProvider()
+    raise ValueError(f"Unknown LLM_PROVIDER: {provider}")

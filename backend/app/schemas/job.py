@@ -13,8 +13,8 @@ from app.schemas.fields import ExtractedField, SkillField, VersioningMeta
 
 class RoleBlueprint(BaseModel):
     role_title: ExtractedField[str]
-    experience_level: ExtractedField[str]  # junior | mid | senior | lead
-    employment_type: ExtractedField[str] | None = None  # full-time | contract | remote
+    experience_level: ExtractedField[str]
+    employment_type: ExtractedField[str] | None = None
     required_skills: list[SkillField] = Field(default_factory=list)
     preferred_skills: list[SkillField] = Field(default_factory=list)
     responsibilities: list[ExtractedField[str]] = Field(default_factory=list)
@@ -43,7 +43,6 @@ class RoleBlueprint(BaseModel):
         return [s.normalized_name for s in self.required_skills]
 
     def to_legacy_dict(self) -> dict:
-        """Adapter for GitHub/evidence pipeline until fully migrated."""
         return {
             "role": self.role_title.value,
             "skills": self.required_skill_names(),
@@ -51,6 +50,23 @@ class RoleBlueprint(BaseModel):
             "weights": self.capability_weights,
             "required_evidence": self.required_evidence,
         }
+
+
+class JobCreate(BaseModel):
+    title: str
+    description: str
+
+
+class JobResponse(BaseModel):
+    job_id: UUID
+    title: str
+    description: str
+    role_blueprint: RoleBlueprint | dict | None = None
+    document_id: UUID | None = None
+    created_at: datetime | None = None
+    candidate_count: int = 0
+
+    model_config = {"from_attributes": True}
 
 
 class JobUploadResponse(BaseModel):
@@ -68,26 +84,21 @@ class BlueprintDraftResponse(BaseModel):
     blueprint: RoleBlueprint
     document_id: UUID | None = None
     status: str = "draft"
+    classification: dict | None = None
+    metrics: dict | None = None
+    warnings: list[str] = Field(default_factory=list)
 
 
 class JobApproveRequest(BaseModel):
-    title: str
-    description: str
+    document_id: UUID
     blueprint: RoleBlueprint
-    document_id: UUID | None = None
+    confirmations: list[str] = Field(default_factory=list)
+    approved_by: str | None = None
 
 
-class JobCreate(BaseModel):
-    title: str
-    description: str
-
-
-class JobResponse(BaseModel):
+class JobApproveResponse(BaseModel):
+    status: str = "approved"
     job_id: UUID
-    title: str
-    description: str
-    role_blueprint: RoleBlueprint | dict | None = None
-    created_at: datetime | None = None
-    candidate_count: int = 0
-
-    model_config = {"from_attributes": True}
+    artifact_id: UUID
+    warnings: list[str] = Field(default_factory=list)
+    feedback_summary: dict = Field(default_factory=dict)

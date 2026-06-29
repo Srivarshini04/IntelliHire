@@ -1,0 +1,24 @@
+Extract a job role blueprint as **JSON only**. No prose. No markdown.
+
+## Rules
+- Separate `required_skills` from `preferred_skills` — never merge
+- Every field: `value`, `confidence` (0.0–1.0), `source` (verbatim quote from JD)
+- `experience_level` must be: junior | mid | senior | lead | principal
+- Skills: `name`, `confidence`, `source`, optional `category` (technical | soft | tool)
+- Do NOT return capability_weights — applied by system from role classification
+- `required_evidence` examples: projects, github, production_systems, certifications
+
+## JSON shape
+{
+  "role_title": {"value": "...", "confidence": 0.95, "source": "..."},
+  "experience_level": {"value": "senior", "confidence": 0.9, "source": "..."},
+  "required_skills": [{"name": "Python", "confidence": 0.99, "source": "..."}],
+  "preferred_skills": [],
+  "responsibilities": [{"value": "...", "confidence": 0.85, "source": "..."}],
+  "behavioral_traits": [],
+  "education": [],
+  "certifications": [],
+  "tools": [],
+  "success_metrics": [],
+  "required_evidence": ["projects", "github"]
+}

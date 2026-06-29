@@ -30,3 +30,10 @@ class Candidate(Base):
     risk_profile: Mapped["RiskProfile | None"] = relationship(back_populates="candidate")
     hidden_talent_profile: Mapped["HiddenTalentProfile | None"] = relationship(back_populates="candidate")
     ranking: Mapped["Ranking | None"] = relationship(back_populates="candidate")
+
+    # --- DELULU v2 persistence (back-references; cascade lives on the v2 side) ---
+    ledger_entries: Mapped[list["EvidenceLedgerEntry"]] = relationship(back_populates="candidate")  # noqa: F821
+    graphs: Mapped[list["CandidateGraph"]] = relationship(back_populates="candidate")  # noqa: F821
+    reasonings: Mapped[list["CandidateReasoning"]] = relationship(back_populates="candidate")  # noqa: F821
+    decisions: Mapped[list["HiringDecision"]] = relationship(back_populates="candidate")  # noqa: F821
+    v2_rankings: Mapped[list["CandidateRanking"]] = relationship(back_populates="candidate")  # noqa: F821
