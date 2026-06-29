@@ -111,12 +111,36 @@ def test_overall_lists_are_tagged_by_source_and_capped():
     assert len(summary.overall_strengths) <= 8
 
 
-def test_errored_source_is_skipped():
+def test_errored_source_shown_as_unavailable():
     summary = build_candidate_summary(
         "Asha",
         {"github": _EVIDENCE["github"], "portfolio": {"error": "connection refused"}},
     )
-    assert {s.source for s in summary.sources} == {"github"}
+    by_source = {s.source: s for s in summary.sources}
+    assert set(by_source) == {"github", "portfolio"}
+    assert by_source["portfolio"].available is False
+    assert "connection refused" in by_source["portfolio"].headline
+    # An unavailable source must NOT be counted as a candidate weakness.
+    assert not any("Portfolio" in w for w in summary.overall_weaknesses)
+
+
+def test_linkedin_without_data_is_unavailable_not_weak():
+    linkedin_empty = {
+        "source": "linkedin",
+        "available": False,
+        "error": "LinkedIn data unavailable — APIFY_TOKEN not configured",
+        "experiences": [],
+        "skills": {"skills": []},
+        "features": [],
+        "ownership": "Unknown",
+        "production": False,
+    }
+    summary = build_candidate_summary("Asha", {"linkedin": linkedin_empty})
+    li = next(s for s in summary.sources if s.source == "linkedin")
+    assert li.available is False
+    assert "APIFY_TOKEN" in li.headline
+    assert li.weaknesses == []  # no fabricated weaknesses
+    assert not any("LinkedIn" in w for w in summary.overall_weaknesses)
 
 
 def test_headline_mentions_verdict_and_sources():

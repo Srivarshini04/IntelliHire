@@ -87,6 +87,7 @@ export interface SourceSummary {
   source: string;
   title: string;
   headline: string;
+  available: boolean;
   stats: SummaryStat[];
   strengths: string[];
   weaknesses: string[];

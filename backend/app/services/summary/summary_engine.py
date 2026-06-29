@@ -340,6 +340,40 @@ def _role_fit(
     )
 
 
+_HAS_DATA = {
+    "github": lambda p: bool(p.get("repositories_analyzed") or p.get("features") or (p.get("skills") or {}).get("languages")),
+    "leetcode": lambda p: bool(_num(p.get("total_solved")) or _num(p.get("coding_skill"))),
+    "linkedin": lambda p: bool(
+        p.get("available", p.get("experiences") or (p.get("skills") or {}).get("skills") or p.get("features"))
+    ),
+    "portfolio": lambda p: bool(p.get("projects") or p.get("skills")),
+    "resume": lambda p: bool(p.get("skills") or (p.get("profile") or {})),
+}
+
+
+def _unavailable_note(source: str, pkg: dict) -> str | None:
+    """Return a reason string when a source produced no usable data, else None."""
+    if pkg.get("error"):
+        return str(pkg["error"])
+    has_data = _HAS_DATA.get(source)
+    if has_data and not has_data(pkg):
+        return "No data could be retrieved from this source."
+    return None
+
+
+def _unavailable_summary(source: str, title: str, note: str) -> SourceSummary:
+    """A neutral card for a source we couldn't read — never counts as a weakness."""
+    return SourceSummary(
+        source=source,
+        title=title,
+        headline=note,
+        available=False,
+        stats=[SummaryStat(label="Status", value="Not available")],
+        strengths=[],
+        weaknesses=[],
+    )
+
+
 # --------------------------------------------------------------------------- #
 # Top-level
 # --------------------------------------------------------------------------- #
@@ -378,7 +412,13 @@ def build_candidate_summary(
     sources: list[SourceSummary] = []
     for source in _SOURCE_ORDER:
         pkg = evidence_by_source.get(source)
-        if not pkg or pkg.get("error"):
+        if not pkg:
+            continue
+        note = _unavailable_note(source, pkg)
+        if note:
+            # Show the source, but as "not available" — don't fabricate weaknesses
+            # for data we never received (e.g. LinkedIn when Apify isn't configured).
+            sources.append(_unavailable_summary(source, _SOURCE_TITLES.get(source, source.title()), note))
             continue
         builder = _BUILDERS.get(source)
         if builder:
@@ -389,7 +429,8 @@ def build_candidate_summary(
 
     cap_score = _num((capability or {}).get("capability_score"))
     hti_score = _num((hti or {}).get("hti_score"))
-    source_names = ", ".join(s.title for s in sources) or "resume"
+    analyzed = [s.title for s in sources if s.available]
+    source_names = ", ".join(analyzed) or "resume"
     headline = (
         f"{name} — {role_fit.verdict.lower()} for this role. "
         f"Capability {cap_score:.0f}/100, HTI {hti_score:.0f}. "

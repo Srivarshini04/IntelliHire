@@ -144,6 +144,7 @@ class SourceSummary(BaseModel):
     source: str
     title: str
     headline: str = ""
+    available: bool = True  # False when no data could be retrieved from this source
     stats: list[SummaryStat] = Field(default_factory=list)
     strengths: list[str] = Field(default_factory=list)
     weaknesses: list[str] = Field(default_factory=list)
