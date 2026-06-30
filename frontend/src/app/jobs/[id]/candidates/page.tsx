@@ -15,6 +15,13 @@ const LINK_FIELDS: { field: LinkField; label: string; placeholder: string }[] = 
   { field: "portfolio_url", label: "Portfolio", placeholder: "https://yoursite.dev" },
 ];
 
+const SOURCE_CHIPS: { key: keyof CandidateListItem; label: string }[] = [
+  { key: "github_url", label: "GitHub" },
+  { key: "linkedin_url", label: "LinkedIn" },
+  { key: "leetcode_url", label: "LeetCode" },
+  { key: "portfolio_url", label: "Portfolio" },
+];
+
 export default function CandidateUploadPage() {
   const params = useParams();
   const jobId = params.id as string;
@@ -25,8 +32,6 @@ export default function CandidateUploadPage() {
   const [message, setMessage] = useState("");
   const [candidates, setCandidates] = useState<CandidateListItem[]>([]);
 
-  // Optional manual links — only used as a fallback when a URL is not found in
-  // the resume (or the resume can't be read).
   const [links, setLinks] = useState({
     github_url: "",
     linkedin_url: "",
@@ -45,7 +50,6 @@ export default function CandidateUploadPage() {
     loadCandidates();
   }, [loadCandidates]);
 
-  // Auto-refresh while any candidate is still being analyzed in the background.
   useEffect(() => {
     if (!candidates.some((c) => !c.analyzed)) return;
     const timer = setInterval(loadCandidates, 4000);
@@ -64,7 +68,6 @@ export default function CandidateUploadPage() {
       const formData = new FormData();
       formData.append("job_id", jobId);
       formData.append("resume", resume);
-      // Send only the links the recruiter actually filled in.
       for (const [field, value] of Object.entries(links)) {
         if (value.trim()) formData.append(field, value.trim());
       }
@@ -85,61 +88,66 @@ export default function CandidateUploadPage() {
   const pending = candidates.filter((c) => !c.analyzed).length;
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-10">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Upload Candidates</h1>
-          <p className="text-zinc-500">Job ID: {jobId}</p>
+          <h1 className="text-4xl font-bold text-white">Upload Candidates</h1>
+          <p className="mt-1 font-mono text-xs text-white/40">Job ID: {jobId}</p>
         </div>
-        <Link
-          href={`/jobs/${jobId}/rankings`}
-          className="text-sm text-violet-600 hover:underline"
-        >
+        <Link href={`/jobs/${jobId}/rankings`} className="text-sm text-violet-300 hover:underline">
           View Rankings →
         </Link>
       </div>
 
-      <form onSubmit={handleUpload} className="mb-8 space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-sm text-zinc-500">
-          Upload a resume PDF — the candidate&apos;s name, email, GitHub, LinkedIn, LeetCode
-          and portfolio links are extracted and the candidate is analyzed automatically. Add
-          any links manually below if they aren&apos;t in the resume.
-        </p>
-        <input
-          key={fileKey}
-          type="file"
-          accept=".pdf"
-          onChange={(e) => setResume(e.target.files?.[0] || null)}
-          className="w-full text-sm"
-          required
-        />
+      <form onSubmit={handleUpload} className="space-y-5">
+        {/* Glowing drop zone */}
+        <label
+          className={`glass glow-ring relative flex cursor-pointer flex-col items-center justify-center gap-3 overflow-hidden border-dashed py-12 text-center transition ${
+            resume ? "" : ""
+          }`}
+        >
+          <div className="pointer-events-none absolute -left-10 top-0 h-40 w-40 rounded-full bg-violet-600/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-10 bottom-0 h-40 w-40 rounded-full bg-cyan-500/15 blur-3xl" />
+          <DropArt />
+          <p className="relative text-sm font-medium text-white/80">
+            {resume ? resume.name : "Drag & Drop Resume PDF"}
+          </p>
+          <p className="relative text-xs text-white/40">PDF — name, email and profile links are auto-extracted</p>
+          <input
+            key={fileKey}
+            type="file"
+            accept=".pdf"
+            onChange={(e) => setResume(e.target.files?.[0] || null)}
+            className="hidden"
+            required
+          />
+        </label>
 
-        <div className="border-t border-zinc-100 pt-3 dark:border-zinc-800">
+        {/* manual links */}
+        <div className="glass p-4">
           <button
             type="button"
             onClick={() => setShowLinks((s) => !s)}
-            className="text-sm font-medium text-violet-600 hover:underline"
+            className="text-sm font-medium text-violet-300 hover:underline"
           >
             {showLinks ? "▾" : "▸"} Add profile links manually (optional)
           </button>
           {showLinks && (
             <div className="mt-3 space-y-3">
-              <p className="text-xs text-zinc-500">
-                Links are read from the resume first. Fill these in only as a fallback —
-                for example when a link is missing from the resume or can&apos;t be extracted.
+              <p className="text-xs text-white/45">
+                Links are read from the resume first. Fill these in only as a fallback — for example
+                when a link is missing from the resume or can&apos;t be extracted.
               </p>
               {LINK_FIELDS.map(({ field, label, placeholder }) => (
                 <div key={field}>
-                  <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    {label}
-                  </label>
+                  <label className="mb-1 block text-xs font-medium text-white/55">{label}</label>
                   <input
                     type="url"
                     inputMode="url"
                     value={links[field]}
                     onChange={(e) => setLinks((prev) => ({ ...prev, [field]: e.target.value }))}
                     placeholder={placeholder}
-                    className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-violet-400 dark:border-zinc-700 dark:bg-zinc-900"
+                    className="field w-full px-3 py-2 text-sm"
                   />
                 </div>
               ))}
@@ -150,81 +158,89 @@ export default function CandidateUploadPage() {
         <button
           type="submit"
           disabled={loading || !resume}
-          className="rounded-lg bg-violet-600 px-6 py-2 font-medium text-white hover:bg-violet-700 disabled:opacity-50"
+          className="btn-glow rounded-xl px-6 py-2.5 font-medium disabled:opacity-50"
         >
           {loading ? "Uploading..." : "Upload Candidate"}
         </button>
       </form>
 
-      {message && <p className="mb-4 text-sm text-zinc-600">{message}</p>}
+      {message && <p className="mt-4 text-sm text-white/60">{message}</p>}
 
-      <div className="mb-8">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            Uploaded Applications ({candidates.length})
-          </h2>
-          {pending > 0 && (
-            <span className="text-xs text-amber-600">{pending} analyzing…</span>
-          )}
+      <div className="mt-10">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Uploaded Applications ({candidates.length})</h2>
+          {pending > 0 && <span className="text-xs text-amber-300">{pending} analyzing…</span>}
         </div>
+
         {candidates.length === 0 ? (
-          <p className="text-sm text-zinc-500">No candidates uploaded yet.</p>
+          <p className="text-sm text-white/45">No candidates uploaded yet.</p>
         ) : (
-          <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="glass divide-y divide-white/5 overflow-hidden">
             {candidates.map((c) => (
-              <li key={c.candidate_id} className="flex items-center justify-between gap-4 px-4 py-3">
+              <div key={c.candidate_id} className="flex items-center justify-between gap-4 px-5 py-3.5">
                 <div className="min-w-0">
-                  <Link
-                    href={`/candidates/${c.candidate_id}`}
-                    className="font-medium text-violet-600 hover:underline"
-                  >
+                  <Link href={`/candidates/${c.candidate_id}`} className="font-medium text-white hover:text-violet-300">
                     {c.name}
                   </Link>
-                  {c.email && <p className="truncate text-xs text-zinc-500">{c.email}</p>}
+                  {c.email && <p className="truncate text-xs text-white/40">{c.email}</p>}
                 </div>
                 <div className="flex shrink-0 items-center gap-2 text-xs">
                   {c.analyzed ? (
-                    <span className="rounded-full bg-green-100 px-2 py-1 font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
+                    <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 font-medium text-emerald-300">
                       Analyzed
                     </span>
                   ) : (
-                    <span className="rounded-full bg-amber-100 px-2 py-1 font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                    <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 font-medium text-amber-300">
                       Analyzing…
                     </span>
                   )}
-                  {c.github_url && (
-                    <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                      GitHub
+                  {SOURCE_CHIPS.filter((s) => c[s.key]).map((s) => (
+                    <span key={s.label} className="chip px-2.5 py-1 text-white/60">
+                      {s.label}
                     </span>
-                  )}
-                  {c.linkedin_url && (
-                    <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                      LinkedIn
-                    </span>
-                  )}
-                  {c.leetcode_url && (
-                    <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                      LeetCode
-                    </span>
-                  )}
-                  {c.portfolio_url && (
-                    <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                      Portfolio
-                    </span>
-                  )}
+                  ))}
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
       <Link
         href={`/jobs/${jobId}/rankings`}
-        className="inline-block rounded-lg border border-violet-600 px-6 py-3 font-medium text-violet-600 transition hover:bg-violet-50 dark:hover:bg-violet-950"
+        className="btn-ghost mt-8 inline-block rounded-xl px-6 py-3 font-medium"
       >
         View Rankings →
       </Link>
     </div>
+  );
+}
+
+function DropArt() {
+  return (
+    <svg viewBox="0 0 120 60" className="relative h-16 w-40">
+      <g opacity="0.9">
+        <rect x="10" y="22" width="16" height="16" rx="2" fill="#a855f7" opacity="0.7" transform="rotate(8 18 30)" />
+        <rect x="30" y="14" width="14" height="14" rx="2" fill="#c4b5fd" opacity="0.6" />
+        <rect x="20" y="36" width="12" height="12" rx="2" fill="#7c3aed" opacity="0.5" />
+      </g>
+      <g stroke="#94a3b8" strokeWidth="0.6" opacity="0.5">
+        <line x1="78" y1="20" x2="98" y2="14" />
+        <line x1="78" y1="20" x2="98" y2="30" />
+        <line x1="78" y1="40" x2="98" y2="30" />
+        <line x1="78" y1="40" x2="98" y2="46" />
+        <line x1="98" y1="14" x2="112" y2="22" />
+        <line x1="98" y1="46" x2="112" y2="38" />
+      </g>
+      <g fill="#8b5cf6">
+        <circle cx="78" cy="20" r="2.4" />
+        <circle cx="78" cy="40" r="2.4" />
+        <circle cx="98" cy="14" r="2" fill="#22d3ee" />
+        <circle cx="98" cy="30" r="2" fill="#e879f9" />
+        <circle cx="98" cy="46" r="2" fill="#22d3ee" />
+        <circle cx="112" cy="22" r="2" />
+        <circle cx="112" cy="38" r="2" />
+      </g>
+    </svg>
   );
 }

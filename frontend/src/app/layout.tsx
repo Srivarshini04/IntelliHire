@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
+import { CosmicBackground } from "@/components/ui/CosmicBackground";
+import { Sparkle } from "@/components/ui/Sparkle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,9 +30,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <body className="relative flex min-h-full flex-col bg-[#05060f] text-zinc-100">
+        <CosmicBackground />
         <Navbar />
         <main className="flex-1">{children}</main>
+        <Sparkle />
+        {/* persistent profile avatar, bottom-left (matches mockups) */}
+        <div className="fixed bottom-6 left-6 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm font-semibold text-white/70 backdrop-blur">
+          N
+        </div>
       </body>
     </html>
   );

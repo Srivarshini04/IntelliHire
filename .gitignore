@@ -57,3 +57,6 @@ datasets/generated/
 # OS
 Thumbs.db
 challenge_data/
+
+# Local design references & generated UI screenshots (large binaries)
+screenshots/
