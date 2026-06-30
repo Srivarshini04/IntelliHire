@@ -63,17 +63,28 @@ class EvidenceProviderAdapter:
         self._normalize = normalizer
 
     async def collect(self, candidate_id: str, raw: dict[str, Any]) -> list[Evidence]:
-        obj = self._normalize(self.source.value, raw or {})
-        if not obj.ok:
-            # DECISION C: never emit absence/failure as Evidence; degrade gracefully.
-            logger.info(
-                "evidence source '%s' unusable for %s: %s",
+        # Graceful-failure boundary: a single source must never abort the evidence
+        # stage (providers run concurrently via asyncio.gather). Any failure here
+        # degrades to "no evidence from this source", never a raised exception.
+        try:
+            obj = self._normalize(self.source.value, raw or {})
+            if not obj.ok:
+                # DECISION C: never emit absence/failure as Evidence; degrade gracefully.
+                logger.info(
+                    "evidence source '%s' unusable for %s: %s",
+                    self.source.value,
+                    candidate_id,
+                    obj.error,
+                )
+                return []
+            return self._to_evidence(candidate_id, obj)
+        except Exception:  # noqa: BLE001 — provider boundary; isolate per-source failures
+            logger.exception(
+                "evidence source '%s' failed for %s; degrading to no evidence",
                 self.source.value,
                 candidate_id,
-                obj.error,
             )
             return []
-        return self._to_evidence(candidate_id, obj)
 
     def _to_evidence(self, candidate_id: str, obj: EvidenceObject) -> list[Evidence]:
         base_conf = _confidence(obj)
