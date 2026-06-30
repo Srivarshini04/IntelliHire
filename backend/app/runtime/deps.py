@@ -13,10 +13,10 @@ from __future__ import annotations
 
 from app.intelligence.role_dna import BlueprintRoleDNAProvider
 from app.runtime.adapters import (
+    CandidateGraphAdapter,
     DecisionEngineAdapter,
     EvidenceProviderAdapter,
     NoOpFusionEngine,
-    NoOpGraphAdapter,
     ReasoningEngineAdapter,
 )
 from app.runtime.candidate_evaluation_pipeline import CandidateEvaluationPipeline
@@ -65,15 +65,22 @@ def get_evidence_providers() -> list[EvidenceProvider]:
 
 
 def get_graph_builder() -> GraphBuilder:
-    """Graph stage. NoOpGraphAdapter while Graph Intelligence (Developer 3) is absent.
+    """Graph stage. Developer 3's Candidate Graph Intelligence, behind the async Protocol.
 
-    Swap to ``CandidateGraphAdapter`` here — and only here — when it lands.
+    ``CandidateGraphAdapter`` wraps Developer 3's synchronous ``GraphBuilder``. This is
+    the single line that activates real graph intelligence; the runtime, routes, and
+    pipeline are unchanged. (``NoOpGraphAdapter`` remains available as the graph-disabled
+    fallback — swap it back here, and only here, to disable the graph.)
     """
-    return NoOpGraphAdapter()
+    return CandidateGraphAdapter()
 
 
 def get_fusion_engine() -> FusionEngine:
-    """Fusion stage. No-op while Graph Intelligence is absent (nothing to fuse)."""
+    """Fusion stage. No-op: confidence fusion happens inside the GraphBuilder.
+
+    Developer 3's builder fuses per-node/edge confidence during ``build`` (a different
+    abstraction from the pipeline ``FusionEngine``), so this stage stays a pass-through.
+    """
     return NoOpFusionEngine()
 
 

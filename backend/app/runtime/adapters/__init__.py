@@ -17,14 +17,16 @@ Rules enforced by this package:
 
 Adapters:
   * EvidenceProviderAdapter — Developer 2 evidence sources -> EvidenceProvider Protocol.
-  * NoOpGraphAdapter        — GraphBuilder placeholder while Developer 3 is absent.
-  * NoOpFusionEngine        — FusionEngine no-op (graph disabled; required by FusionStage).
+  * CandidateGraphAdapter   — Developer 3 sync GraphBuilder -> GraphBuilder Protocol.
+  * NoOpGraphAdapter        — GraphBuilder placeholder / graph-disabled fallback.
+  * NoOpFusionEngine        — FusionEngine no-op (fusion done in-builder; required by FusionStage).
   * ReasoningEngineAdapter  — Developer 4 sync ReasoningEngine -> ReasoningEngine Protocol.
   * DecisionEngineAdapter   — Developer 4 sync DecisionEngine -> DecisionEngine Protocol.
 """
 
 from __future__ import annotations
 
+from app.runtime.adapters.candidate_graph_adapter import CandidateGraphAdapter
 from app.runtime.adapters.decision_adapter import DecisionEngineAdapter
 from app.runtime.adapters.evidence_adapter import EvidenceProviderAdapter
 from app.runtime.adapters.noop_graph_adapter import NoOpFusionEngine, NoOpGraphAdapter
@@ -32,6 +34,7 @@ from app.runtime.adapters.reasoning_adapter import ReasoningEngineAdapter
 
 __all__ = [
     "EvidenceProviderAdapter",
+    "CandidateGraphAdapter",
     "NoOpGraphAdapter",
     "NoOpFusionEngine",
     "ReasoningEngineAdapter",
