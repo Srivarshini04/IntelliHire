@@ -113,6 +113,7 @@ class GraphNodeType(str, Enum):
     PUBLICATION = "publication"
     DOMAIN = "domain"
     CONTRIBUTION = "contribution"
+    TECHNOLOGY = "technology"  # a concrete tool/library/framework (e.g. FastAPI, Postgres)
 
 
 class GraphEdgeType(str, Enum):
@@ -128,6 +129,12 @@ class GraphEdgeType(str, Enum):
     IN_DOMAIN = "in_domain"
     DEPLOYED_WITH = "deployed_with"
     PART_OF = "part_of"
+    # Graph-intelligence inference edges (added by the RelationshipInferenceEngine).
+    USES = "uses"              # repository/project -> technology
+    PROVES = "proves"          # repository/project -> skill (demonstrated artefact)
+    VALIDATES = "validates"    # certification/assessment -> skill (third-party check)
+    ACHIEVED = "achieved"      # candidate -> achievement
+    RELATED_TO = "related_to"  # generic co-occurrence / inferred association
 
 
 class Intensity(str, Enum):

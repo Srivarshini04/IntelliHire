@@ -46,7 +46,9 @@ def _fetch_raw(linkedin_url: str) -> dict[str, Any]:
     settings = get_settings()
     if not settings.apify_token:
         logger.warning("APIFY_TOKEN not set — skipping Apify LinkedIn extraction")
-        return _empty_basic()
+        # Make the gap explicit so the UI shows "data unavailable" rather than
+        # mistaking an empty profile for a weak candidate.
+        return {**_empty_basic(), "error": "LinkedIn data unavailable — APIFY_TOKEN not configured"}
 
     try:
         return fetch_linkedin_data(linkedin_url)
@@ -108,9 +110,17 @@ async def analyze_linkedin_evidence(
     )
     basic, deep = await asyncio.gather(basic_task, deep_task)
 
+    experiences = deep.get("experiences", []) or basic.get("experiences", [])
+    skills = basic.get("skills", []) or (deep.get("skill_claims") or [])
+    # "Available" means we actually retrieved profile content to reason about —
+    # not just that a URL was supplied. Empty => show as unavailable, not weak.
+    available = bool(experiences or skills or deep.get("features") or basic.get("profile"))
+
     return {
         "source": "linkedin",
         "linkedin_url": linkedin_url,
+        "available": available,
+        "error": basic.get("error"),
         "basic": basic,
         "deep": deep,
         "skills": {

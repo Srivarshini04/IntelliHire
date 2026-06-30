@@ -16,6 +16,7 @@ from app.schemas.fields import (
     SkillField,
     VersioningMeta,
 )
+from app.services.evidence.base import EvidenceObject
 
 
 class CandidateProfile(BaseModel):
@@ -72,6 +73,8 @@ class CandidateResponse(BaseModel):
     email: str | None = None
     github_url: str | None = None
     linkedin_url: str | None = None
+    leetcode_url: str | None = None
+    portfolio_url: str | None = None
 
 
 class CandidateListItem(BaseModel):
@@ -80,6 +83,8 @@ class CandidateListItem(BaseModel):
     email: str | None = None
     github_url: str | None = None
     linkedin_url: str | None = None
+    leetcode_url: str | None = None
+    portfolio_url: str | None = None
     has_resume: bool = False
     analyzed: bool = False
     created_at: datetime | None = None
@@ -128,6 +133,41 @@ class ExplanationSchema(BaseModel):
     reason: str = ""
 
 
+class SummaryStat(BaseModel):
+    label: str
+    value: str
+
+
+class SourceSummary(BaseModel):
+    """Per-source remarks: what each profile/URL told us about the candidate."""
+
+    source: str
+    title: str
+    headline: str = ""
+    available: bool = True  # False when no data could be retrieved from this source
+    stats: list[SummaryStat] = Field(default_factory=list)
+    strengths: list[str] = Field(default_factory=list)
+    weaknesses: list[str] = Field(default_factory=list)
+
+
+class RoleFitSummary(BaseModel):
+    verdict: str  # "Strong match" | "Partial match" | "Weak match"
+    fit_score: float = 0.0
+    matched_skills: list[str] = Field(default_factory=list)
+    missing_skills: list[str] = Field(default_factory=list)
+    reason: str = ""
+
+
+class CandidateSummary(BaseModel):
+    """A holistic, explainable brief of the candidate across every source."""
+
+    headline: str = ""
+    role_fit: RoleFitSummary
+    sources: list[SourceSummary] = Field(default_factory=list)
+    overall_strengths: list[str] = Field(default_factory=list)
+    overall_weaknesses: list[str] = Field(default_factory=list)
+
+
 class CandidateDetailResponse(BaseModel):
     candidate_id: UUID
     name: str
@@ -135,4 +175,6 @@ class CandidateDetailResponse(BaseModel):
     risk: RiskProfileSchema | None = None
     hti: HTIProfileSchema | None = None
     evidence: list[EvidenceSchema] = Field(default_factory=list)
+    standardized_evidence: list[EvidenceObject] = Field(default_factory=list)
     explanation: ExplanationSchema | None = None
+    summary: CandidateSummary | None = None

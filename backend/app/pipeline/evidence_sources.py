@@ -8,10 +8,11 @@ SOURCE_RELIABILITY: dict[str, float] = {
     "hackerrank": 0.80,
     "linkedin": 0.60,
     "resume": 0.50,
+    "portfolio": 0.50,  # self-reported, like a resume
 }
 
 # Priority order for tie-breaking (highest first)
-SOURCE_PRIORITY: list[str] = ["github", "leetcode", "hackerrank", "linkedin", "resume"]
+SOURCE_PRIORITY: list[str] = ["github", "leetcode", "hackerrank", "linkedin", "resume", "portfolio"]
 
 
 def reliability(source: str) -> float:

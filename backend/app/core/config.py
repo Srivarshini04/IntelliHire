@@ -5,7 +5,9 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     app_name: str = "DELULU API"
-    debug: bool = True
+    # Safe-by-default for production: drives SQLAlchemy SQL echo (app/core/database.py).
+    # Enable in development via DEBUG=true in .env / .env.local.
+    debug: bool = False
     database_url: str = "postgresql+asyncpg://delulu:delulu@localhost:5432/delulu"
     database_url_sync: str = "postgresql://delulu:delulu@localhost:5432/delulu"
     redis_url: str = "redis://localhost:6379/0"

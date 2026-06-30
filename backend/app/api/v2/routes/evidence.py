@@ -9,8 +9,10 @@ from app.api.v2.schemas import (
     ExtractEvidenceRequest,
     ExtractEvidenceResponse,
 )
+from app.runtime.deps import get_evidence_provider
 
-router = APIRouter(prefix="/evidence", tags=["v2: evidence"])
+# INTERNAL/DEBUG: single-stage endpoint, not the frontend API. Use POST /v2/evaluations.
+router = APIRouter(prefix="/evidence", tags=["v2: internal/debug"])
 
 
 @router.post(
@@ -18,18 +20,18 @@ router = APIRouter(prefix="/evidence", tags=["v2: evidence"])
     response_model=ExtractEvidenceResponse,
     status_code=status.HTTP_200_OK,
     responses=ERROR_RESPONSES,
-    summary="Extract atomic Evidence from a raw source",
+    summary="[debug] Extract atomic Evidence from a raw source",
     description=(
-        "Run an EvidenceProvider over one raw source payload and return the "
-        "atomic Evidence it observes. Providers emit observed facts only — never "
-        "absence and never role weighting (DECISIONS B & C). STUB: returns an "
-        "empty evidence list echoing the request inputs."
+        "INTERNAL/DEBUG. Run one EvidenceProvider over a raw source payload and return "
+        "the atomic Evidence it observes (observed facts only — DECISIONS B & C). The "
+        "frontend should use POST /v2/evaluations instead."
     ),
 )
 async def extract_evidence(payload: ExtractEvidenceRequest) -> ExtractEvidenceResponse:
-    # Stub: no provider wired yet. Shape is valid and OpenAPI-complete.
+    provider = get_evidence_provider(payload.source)
+    evidence = await provider.collect(payload.candidate_id, payload.raw)
     return ExtractEvidenceResponse(
         candidate_id=payload.candidate_id,
         source=payload.source,
-        evidence=[],
+        evidence=evidence,
     )

@@ -24,3 +24,6 @@ pymupdf>=1.24.0
 python-docx>=1.1.0
 
 PyYAML>=6.0.2
+
+# Candidate Graph Intelligence Layer (in-process graph backend; pluggable for Neo4j).
+networkx>=3.0

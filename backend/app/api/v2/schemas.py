@@ -12,7 +12,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-from app.shared.enums import EvidenceSource, RankingStage
+from app.shared.enums import EvidenceSource, GraphNodeType, RankingStage
 from app.shared.models import Evidence, HiringDecision
 
 
@@ -73,6 +73,36 @@ class BuildGraphRequest(BaseModel):
     job_id: str | None = Field(
         default=None, description="Set when the graph is scoped to a specific role."
     )
+
+
+# --------------------------------------------------------------------------- #
+# 2b. Graph query responses (projections over the frozen CandidateGraph)
+# --------------------------------------------------------------------------- #
+class EntityConfidenceResponse(BaseModel):
+    """Fused confidence + corroboration detail for one graph entity."""
+
+    node_id: str
+    label: str
+    type: GraphNodeType
+    confidence: float = Field(ge=0.0, le=1.0)
+    claim_strength: float | None = Field(default=None, description="How corroborated [0,1].")
+    source_count: int | None = Field(default=None, description="Distinct attesting sources.")
+    verification_status: str | None = Field(default=None)
+    evidence_count: int = Field(default=0, description="Bound evidence supporting this entity.")
+    inferred: bool = Field(default=False, description="True if derived, not explicitly claimed.")
+
+
+class GraphSummaryResponse(BaseModel):
+    """Compact overview of a CandidateGraph's topology."""
+
+    graph_id: str
+    candidate_id: str
+    node_count: int
+    edge_count: int
+    evidence_count: int
+    inferred_node_count: int
+    nodes_by_type: dict[str, int] = Field(default_factory=dict)
+    edges_by_type: dict[str, int] = Field(default_factory=dict)
 
 
 # --------------------------------------------------------------------------- #
@@ -170,6 +200,8 @@ __all__ = [
     "ExtractEvidenceRequest",
     "ExtractEvidenceResponse",
     "BuildGraphRequest",
+    "EntityConfidenceResponse",
+    "GraphSummaryResponse",
     "GenerateRoleDNARequest",
     "RunReasoningRequest",
     "GenerateDecisionRequest",

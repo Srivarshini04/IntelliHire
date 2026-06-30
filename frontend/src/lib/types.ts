@@ -22,6 +22,8 @@ export interface Candidate {
   email?: string;
   github_url?: string;
   linkedin_url?: string;
+  leetcode_url?: string;
+  portfolio_url?: string;
 }
 
 export interface CandidateListItem {
@@ -30,6 +32,8 @@ export interface CandidateListItem {
   email?: string;
   github_url?: string;
   linkedin_url?: string;
+  leetcode_url?: string;
+  portfolio_url?: string;
   has_resume: boolean;
   analyzed: boolean;
   created_at?: string;
@@ -74,6 +78,37 @@ export interface Explanation {
   reason: string;
 }
 
+export interface SummaryStat {
+  label: string;
+  value: string;
+}
+
+export interface SourceSummary {
+  source: string;
+  title: string;
+  headline: string;
+  available: boolean;
+  stats: SummaryStat[];
+  strengths: string[];
+  weaknesses: string[];
+}
+
+export interface RoleFitSummary {
+  verdict: string;
+  fit_score: number;
+  matched_skills: string[];
+  missing_skills: string[];
+  reason: string;
+}
+
+export interface CandidateSummary {
+  headline: string;
+  role_fit: RoleFitSummary;
+  sources: SourceSummary[];
+  overall_strengths: string[];
+  overall_weaknesses: string[];
+}
+
 export interface CandidateDetail {
   candidate_id: string;
   name: string;
@@ -86,4 +121,5 @@ export interface CandidateDetail {
     relevance_score?: number;
   }>;
   explanation?: Explanation;
+  summary?: CandidateSummary;
 }

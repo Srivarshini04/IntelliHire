@@ -21,7 +21,9 @@ from app.models.scoring import (
 from app.services.capability.capability_engine import compute_capability
 from app.services.confidence.confidence_engine import compute_confidence
 from app.services.evidence.github_parser import parse_github
+from app.services.evidence.leetcode_service import analyze_leetcode_evidence
 from app.services.evidence.linkedin_service import analyze_linkedin_evidence
+from app.services.evidence.portfolio_service import analyze_portfolio_evidence
 from app.services.evidence.relevance_engine import (
     filter_evidence,
     github_artifacts,
@@ -155,15 +157,22 @@ async def analyze_candidate(db: AsyncSession, candidate_id: uuid.UUID) -> str:
 
     # GitHub/LinkedIn URLs come from the intelligence layer first, then fall
     # back to any URL supplied manually on the candidate record.
+    # Resume-extracted URLs take priority; the manually-entered links stored on
+    # the candidate are the fallback for whatever the resume didn't surface.
     github_url = url_fields.get("github_url") or candidate.github_url
     linkedin_url = url_fields.get("linkedin_url") or candidate.linkedin_url
-    leetcode_url = url_fields.get("leetcode_url")
+    leetcode_url = url_fields.get("leetcode_url") or candidate.leetcode_url
+    portfolio_url = url_fields.get("portfolio_url") or candidate.portfolio_url
 
     # Persist newly discovered URLs back onto the candidate so the UI reflects them.
     if github_url and github_url != candidate.github_url:
         candidate.github_url = github_url
     if linkedin_url and linkedin_url != candidate.linkedin_url:
         candidate.linkedin_url = linkedin_url
+    if leetcode_url and leetcode_url != candidate.leetcode_url:
+        candidate.leetcode_url = leetcode_url
+    if portfolio_url and portfolio_url != candidate.portfolio_url:
+        candidate.portfolio_url = portfolio_url
 
     if github_url:
         # NOTE: linkedin_url is intentionally NOT passed — the GitHub deep pipeline
@@ -186,6 +195,26 @@ async def analyze_candidate(db: AsyncSession, candidate_id: uuid.UUID) -> str:
         )
         evidence_data["linkedin"] = linkedin_data
         await _store_evidence(db, candidate.id, "linkedin", linkedin_data, relevance=75.0)
+
+    # LeetCode is a first-class verified source. The GitHub deep pipeline already
+    # evaluates it when a leetcode_url is present (capability scoring reads it from
+    # there), so reuse that result to avoid a second network round-trip; only call
+    # the standalone provider when GitHub didn't run.
+    if leetcode_url:
+        leetcode_data = (evidence_data.get("github") or {}).get("leetcode")
+        if not leetcode_data:
+            leetcode_data = await analyze_leetcode_evidence(leetcode_url, role_blueprint=role_blueprint)
+        if leetcode_data and not leetcode_data.get("error"):
+            leetcode_data.setdefault("source_url", leetcode_url)
+            evidence_data["leetcode"] = leetcode_data
+            await _store_evidence(db, candidate.id, "leetcode", leetcode_data, relevance=85.0)
+
+    # Portfolio is self-reported (low reliability) — it complements GitHub/LeetCode.
+    if portfolio_url:
+        portfolio_data = await analyze_portfolio_evidence(portfolio_url, role_blueprint=role_blueprint)
+        if portfolio_data and not portfolio_data.get("error"):
+            evidence_data["portfolio"] = portfolio_data
+            await _store_evidence(db, candidate.id, "portfolio", portfolio_data, relevance=55.0)
 
     if candidate.resume_path and "resume" in evidence_data:
         await _store_evidence(db, candidate.id, "resume", evidence_data["resume"], relevance=80.0)
